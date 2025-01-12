@@ -48,7 +48,7 @@ python3 main.py
 </table>
 
 > [!NOTE]
-> Should be overal compatible with every OS, but i can't guarantee for windows users
+> Should be overal compatible with every OS, but i can't guarantee for windows users as i haven't tried.
 
 
 ## Upcoming features
