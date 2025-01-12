@@ -9,6 +9,10 @@
 ![GitHub forks](https://img.shields.io/github/forks/LifelagCheats/202Lol?logoColor=ffff&color=%23ff0000)
 ![GitHub Repo stars](https://img.shields.io/github/stars/LifelagCheats/202Lol?color=%2332cd32)
 
+
+[![Run on Replit](https://replit.com/badge/github/LifelagCheats/202Lol)](https://replit.com/github/LifelagCheats/202Lol)
+
+
 **Web request handler for the ease of mind and the newbies in mind**
 
 </div>
