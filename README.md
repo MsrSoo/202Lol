@@ -38,6 +38,7 @@ cd 202Lol
 pip install -r requirements.txt
 python3 main.py
 ```
+> If you can't git clone this locally, i made it possible so that you can run it on replit.
 
 ### Tested Operating Systems
 <table>
