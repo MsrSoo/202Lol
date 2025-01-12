@@ -1,0 +1,4 @@
+halo
+rich
+requests
+tqdm
