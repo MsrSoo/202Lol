@@ -1,0 +1,8 @@
+version: 2  
+updates:  
+  - package-ecosystem: "pip" # Specifies that you are using pip  
+    directory: "/" # Indicates that requirements.txt is in the root directory  
+    schedule:  
+      interval: "daily" # Check for updates daily; can also be 'weekly' or 'monthly'  
+    commit-message:  
+      prefix: "fix" # Optional: Customize the commit message prefix for PRs
