@@ -8,6 +8,7 @@
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/LifelagCheats/202Lol)
 ![GitHub forks](https://img.shields.io/github/forks/LifelagCheats/202Lol?logoColor=ffff&color=%23ff0000)
 ![GitHub Repo stars](https://img.shields.io/github/stars/LifelagCheats/202Lol?color=%2332cd32)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 
 [![Run on Replit](https://replit.com/badge/github/LifelagCheats/202Lol)](https://replit.com/github/LifelagCheats/202Lol)
