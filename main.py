@@ -2,15 +2,15 @@ import requests as rqs
 from rich.console import Console
 from tqdm import tqdm
 import time
-from rich import print
 from halo import Halo
+import subprocess
 import os
 
 def clear():
     if os.name == 'nt':
-        _ = os.system('cls')
+       subprocess.run(['cls'], shell=False)
     else:
-        _ = os.system('clear')
+        subprocess.run(['clear'], shell=True)
 
 clear()
 
@@ -47,7 +47,7 @@ def normalize(website):
 try:
     website = input("Website url: ").lower()
     website = normalize(website)
-    r = rqs.get(website)
+    r = rqs.get(website, timeout=15)
     webspin.start()
     time.sleep(4)
     response = r.status_code
@@ -102,7 +102,7 @@ while True:
                     cookienumber = int(input("Number of cookie requests to do: "))
                     print("Sending requests...")
                     for i in tqdm(range(int(cookienumber))):
-                        jarequest = rqs.get(jargeturl, cookies=jarget)
+                        jarequest = rqs.get(jargeturl, cookies=jarget, timeout=3)
                     printresult_jar = input("Do you want to print the response and cookies? (y/n) ").lower()
                     if printresult_jar == 'y':
                         print(jarequest.text)
@@ -116,12 +116,12 @@ while True:
                     numberget = int(input("Number of requests to do: "))
                     cookieget = input("Enter the name of the cookies you want to get after this: ")
                     for i in tqdm(range(int(numberget))):
-                        rget = rqs.get(website, params=payloadget)
+                        rget = rqs.get(website, params=payloadget, timeout=3)
                     printresult_nojar = input("Do you want to print the response and cookies? (y/n) ").lower()
-                    if printresult == 'y':
+                    if printresult_nojar == 'y':
                         print(rget.text)
                         print(rget.cookies[cookieget])
-                    elif printresult == 'n':
+                    elif printresult_nojar == 'n':
                         pass
                     else:
                         print("Invalid option")
@@ -131,7 +131,7 @@ while True:
                 numberget = int(input("Number of requests to do: "))
                 console.print("[bold cyan] Sending requests...")
                 for i in tqdm(range(int(numberget))):
-                    rget = rqs.get(website, params=payloadget)
+                    rget = rqs.get(website, params=payloadget, timeout=3)
                 printresult_nocookies = input("Do you want to print the response and cookies? (y/n) ").lower()
                 if printresult_nocookies == 'y':
                     print(rget.text)
@@ -168,7 +168,7 @@ while True:
                     galletanumber = int(input("Number of cookie requests to do: "))
                     console.print("[bold cyan] Sending requests...")
                     for i in tqdm(range(int(galletanumber))):
-                        jarequestpost = rqs.get(jarposturl, cookies=jarpost)
+                        jarequestpost = rqs.post(jarposturl, cookies=jarpost, timeout=3)
                     printresult_jarredo = input("Do you want to print the response and cookies? (y/n) ").lower()
                     if printresult_jarredo == 'y':
                         print(jarequestpost.text)
@@ -183,7 +183,7 @@ while True:
                     time.sleep(1)
                     console.print("[bold cyan] Sending requests...")
                     for i in tqdm(range(int(numberpost))):
-                        rpost = rqs.get(website, params=payloadpost)
+                        rpost = rqs.post(website, params=payloadpost, timeout=3)
                     printresult_nojarredo = input("Do you want to print the response and cookies? (y/n) ").lower()
                     if printresult_nojarredo == 'y':
                         print(rpost.text)
@@ -197,7 +197,7 @@ while True:
                 numberpost = int(input("Number of requests to do: "))
                 console.print("[bold cyan] Sending requests...")
                 for i in tqdm(range(int(numberpost))):
-                    rpost = rqs.get(website, params=payloadpost)
+                    rpost = rqs.post(website, params=payloadpost, timeout=3)
                 printresult_nogalleta = input("Do you want to print the response and cookies? (y/n) ").lower()
                 if printresult_nogalleta == 'y':
                     print(rpost.text)
@@ -227,7 +227,7 @@ while True:
                     console.print("[red] Invalid choice")
                 elif rqstype == "post":
                     spinner.start(["Preparing payload..."])
-                    rfilepost = rqs.post(website, files=filecontent)
+                    rfilepost = rqs.post(website, files=filecontent, timeout=10)
                     time.sleep(1.2)
                     spinner.stop()
                     afileresult = input("Do you want to print the response and cookies? (y/n)").lower()
@@ -239,7 +239,7 @@ while True:
                         console.print("[red] Invalid Option")
                 elif rqstype == "get":
                     spinner.start(["Preparing payload..."])
-                    rfileget = rqs.get(website, files=filecontent)
+                    rfileget = rqs.get(website, files=filecontent, timeout=10)
                     time.sleep(1.2)
                     spinner.stop()
                     bfileresult = input("Do you want to print the response and cookies? (y/n)").lower()
@@ -284,7 +284,7 @@ while True:
                         console.print("[italic blue] Sending payload...")
                         time.sleep(1)
                         for i in tqdm(range(int(numreq))):
-                            autowritepost = rqs.post(website, files=autofilecontent)
+                            autowritepost = rqs.post(website, files=autofilecontent, timeout=3)
                         time.sleep(0.5)
                         ffileresult = input("Do you want to print the response and cookies? (y/n) ").lower()
                         if ffileresult == 'y':
@@ -295,7 +295,7 @@ while True:
                             console.print("[red] Invalid Option")
                     elif autowritetype == "get":
                         for i in tqdm(range(int(numreq))):
-                            autowriteget = rqs.get(website, files=autofilecontent)
+                            autowriteget = rqs.get(website, files=autofilecontent, timeout=3)
                         ffileresult = input("Do you want to print the response and cookies? (y/n) ").lower()
                         if ffileresult == 'y':
                             print(autowriteget)
@@ -317,7 +317,7 @@ while True:
                     if writetype not in requestchoice:
                         console.print("[red] Invalid choice")
                     elif writetype == "post":
-                        writepost = rqs.post(website, files=writecontent)
+                        writepost = rqs.post(website, files=writecontent, timeout=5)
                         cfileresult = input("Do you want to print the response and cookies? (y/n)").lower()
                         if cfileresult == 'y':
                             print(writepost)
@@ -326,8 +326,8 @@ while True:
                         else:
                             console.print("[red]Invalid Option")
                     elif writetype == "get":
-                        writeget = rqs.get(website, files=writecontent)
-                        bfileresult = input("Do you want to print the response and cookies? (y/n)").lower()
+                        writeget = rqs.get(website, files=writecontent, timeout=5)
+                        dfileresult = input("Do you want to print the response and cookies? (y/n)").lower()
                         if dfileresult == 'y':
                             print(writeget)
                         elif dfileresult == 'n':
@@ -385,3 +385,4 @@ while True:
     except rqs.exceptions.RequestException as e:  
         print(f"An error occurred: {e}")
         exit()
+
