@@ -10,7 +10,7 @@ def clear():
     if os.name == 'nt':
        subprocess.run(['cls'], shell=False)
     else:
-        subprocess.run(['clear'], shell=True)
+        subprocess.run(['clear'], shell=False)
 
 clear()
 
