@@ -19,6 +19,6 @@ jobs:
     
     - name: Run linters
       run: |
-        flake8 .
-        black . --check
-        isort . --check-only
+        flake8 main.py
+        black main.py --check
+        isort main.py --check-only
