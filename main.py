@@ -4,13 +4,21 @@ from tqdm import tqdm
 import time
 from halo import Halo
 import subprocess
+import base64
 import os
 
 def clear():
-    if os.name == 'nt':
-       subprocess.run(['cls'], shell=False)
-    else:
-        subprocess.run(['clear'], shell=False)
+    try:
+        if os.name == 'nt':
+            subprocess.run(['cls'], shell=False)
+        else:
+            subprocess.run(['clear'], shell=False)
+
+    except subprocess.CalledProcessError as e:
+        print(f"check50 failed: {e}")
+        print(e.stderr)        
+    except subprocess.TimeoutExpired:
+        print("Command timed out")
 
 clear()
 
@@ -253,8 +261,6 @@ while True:
             elif typefile == "create":
                 method = input("Do you want an auto generated file (a) or a custom string (b)? ")
                 if method == 'a':
-                    import base64
-                    import os
                     num_lines = int(input("Enter the number of lines of gibberish you want: "))  
                     autofilename = input("Enter the name of the output text file (with .txt extension): ")
                     headername = input("Enter a simple name for the payload header name: ")
@@ -268,7 +274,7 @@ while True:
                             gibberish_lines.append(base64_line)
 
                     time.sleep(2)
-                    with open(autofilename, 'w') as f:
+                    with open(autofilename, 'w', encoding='utf-8') as f:
                             for line in tqdm(gibberish_lines, desc="Writing Lines...  "):  
                                 f.write(line + '\n')  
                     
@@ -340,7 +346,7 @@ while True:
         elif user == 'reset':
             websiteagain = input("Enter new website: ")
             websiteagain = normalize(websiteagain)
-            rg = rqs.get(websiteagain)
+            rg = rqs.get(websiteagain, timeout=15)
             webspin.start()
             time.sleep(4)
             response = r.status_code
