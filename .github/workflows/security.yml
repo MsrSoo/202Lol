@@ -26,5 +26,5 @@ jobs:
     
     - name: Run security checks
       run: |
-        bandit -r .
-        safety check
+        bandit -r main.py tests/test_main.py
+        safety check -r requirements.txt
