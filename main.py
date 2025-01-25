@@ -16,7 +16,7 @@ def clear():
 
     except subprocess.CalledProcessError as e:
         print(f"check50 failed: {e}")
-        print(e.stderr)        
+        print(e.stderr)
     except subprocess.TimeoutExpired:
         print("Command timed out")
 
@@ -25,21 +25,21 @@ clear()
 console = Console()
 
 console.print("""[bold cyan]
-    
 
 
 
 
-    ██████╗  ██████╗ ██████╗ ██╗      ██████╗ ██╗     
-    ╚════██╗██╔═████╗╚════██╗██║     ██╔═══██╗██║     
-     █████╔╝██║██╔██║ █████╔╝██║     ██║   ██║██║     
-    ██╔═══╝ ████╔╝██║██╔═══╝ ██║     ██║   ██║██║     
+
+    ██████╗  ██████╗ ██████╗ ██╗      ██████╗ ██╗
+    ╚════██╗██╔═████╗╚════██╗██║     ██╔═══██╗██║
+     █████╔╝██║██╔██║ █████╔╝██║     ██║   ██║██║
+    ██╔═══╝ ████╔╝██║██╔═══╝ ██║     ██║   ██║██║
     ███████╗╚██████╔╝███████╗███████╗╚██████╔╝███████╗
     ╚══════╝ ╚═════╝ ╚══════╝╚══════╝ ╚═════╝ ╚══════╝
 
-                                        
-                                  
-                website requests handler                
+
+
+                website requests handler
 """)
 
 webspin = Halo(text='Checking website...', spinner='dots')
@@ -47,10 +47,11 @@ payloadspin = Halo(text='Preparing payload...', spinner='dots')
 jarspin = Halo(text='Building Jar...', spinner='dots')
 spinner = Halo(text='', spinner='dots')
 
-def normalize(website):   
-    if not website.startswith(('http://', 'https://')):  
-        website = 'http://' + website 
-    return website 
+
+def normalize(website):
+    if not website.startswith(('http://', 'https://')):
+        website = 'http://' + website
+    return website
 
 try:
     website = input("Website url: ").lower()
@@ -68,7 +69,7 @@ try:
 except KeyboardInterrupt:
     print("\nTerminated by user.")
     exit()
-except rqs.exceptions.ConnectionError as e:  
+except rqs.exceptions.ConnectionError as e:
         print(f"Connection error: {e}")  
         exit()
 except rqs.exceptions.Timeout:  
@@ -391,4 +392,3 @@ while True:
     except rqs.exceptions.RequestException as e:  
         print(f"An error occurred: {e}")
         exit()
-
