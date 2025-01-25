@@ -6,6 +6,7 @@ from halo import Halo
 import subprocess
 import base64
 import os
+import whois
 
 def clear():
     try:
@@ -53,6 +54,7 @@ def normalize(website):
         website = 'http://' + website
     return website
 
+
 try:
     website = input("Website url: ").lower()
     website = normalize(website)
@@ -81,7 +83,7 @@ except rqs.exceptions.RequestException as e:
 
 while True:
     try:
-        choices = ['post', 'get', 'file', 'exit', 'help', 'reset']
+        choices = ['post', 'get', 'file', 'exit', 'help', 'reset', 'whois']
         user = input("\n>> ").lower()
         if user not in choices:
             console.print("[red] Invalid command, please enter a valid one.")
@@ -109,7 +111,7 @@ while True:
                     jarspin.stop()
                     jargeturl = input("Enter the url: ")
                     cookienumber = int(input("Number of cookie requests to do: "))
-                    print("Sending requests...")
+                    console.print(f"[bold cyan] Sending requests...")
                     for i in tqdm(range(int(cookienumber))):
                         jarequest = rqs.get(jargeturl, cookies=jarget, timeout=3)
                     printresult_jar = input("Do you want to print the response and cookies? (y/n) ").lower()
@@ -124,6 +126,7 @@ while True:
                 elif jarred == 'n':
                     numberget = int(input("Number of requests to do: "))
                     cookieget = input("Enter the name of the cookies you want to get after this: ")
+                    console.print(f"[bold cyan] Sending requests...")
                     for i in tqdm(range(int(numberget))):
                         rget = rqs.get(website, params=payloadget, timeout=3)
                     printresult_nojar = input("Do you want to print the response and cookies? (y/n) ").lower()
@@ -138,7 +141,7 @@ while True:
 
             elif bisquit == 'n':
                 numberget = int(input("Number of requests to do: "))
-                console.print("[bold cyan] Sending requests...")
+                console.print(f"[bold cyan] Sending requests...")
                 for i in tqdm(range(int(numberget))):
                     rget = rqs.get(website, params=payloadget, timeout=3)
                 printresult_nocookies = input("Do you want to print the response and cookies? (y/n) ").lower()
@@ -175,7 +178,7 @@ while True:
                     jarspin.stop()
                     jarposturl = input("Enter the url: ")
                     galletanumber = int(input("Number of cookie requests to do: "))
-                    console.print("[bold cyan] Sending requests...")
+                    console.print(f"[bold cyan] Sending requests...")
                     for i in tqdm(range(int(galletanumber))):
                         jarequestpost = rqs.post(jarposturl, cookies=jarpost, timeout=3)
                     printresult_jarredo = input("Do you want to print the response and cookies? (y/n) ").lower()
@@ -190,7 +193,7 @@ while True:
                     numberpost = int(input("Number of requests to do: "))
                     cookiepost = input("Enter the name of the cookies you want to get after this: ")
                     time.sleep(1)
-                    console.print("[bold cyan] Sending requests...")
+                    console.print(f"[bold cyan] Sending requests...")
                     for i in tqdm(range(int(numberpost))):
                         rpost = rqs.post(website, params=payloadpost, timeout=3)
                     printresult_nojarredo = input("Do you want to print the response and cookies? (y/n) ").lower()
@@ -204,7 +207,7 @@ while True:
 
             elif galleta == 'n':
                 numberpost = int(input("Number of requests to do: "))
-                console.print("[bold cyan] Sending requests...")
+                console.print(f"[bold cyan] Sending requests...")
                 for i in tqdm(range(int(numberpost))):
                     rpost = rqs.post(website, params=payloadpost, timeout=3)
                 printresult_nogalleta = input("Do you want to print the response and cookies? (y/n) ").lower()
@@ -288,7 +291,7 @@ while True:
                         console.print("[red] Invalid choice")
                     elif autowritetype == "post":
                         autofilecontent = {headername: open(autofilename, 'rb')}
-                        console.print("[italic blue] Sending payload...")
+                        console.print(f"[italic blue] Sending payload...")
                         time.sleep(1)
                         for i in tqdm(range(int(numreq))):
                             autowritepost = rqs.post(website, files=autofilecontent, timeout=3)
@@ -301,6 +304,7 @@ while True:
                         else:
                             console.print("[red] Invalid Option")
                     elif autowritetype == "get":
+                        console.print(f"[bold cyan] Sending payload...")
                         for i in tqdm(range(int(numreq))):
                             autowriteget = rqs.get(website, files=autofilecontent, timeout=3)
                         ffileresult = input("Do you want to print the response and cookies? (y/n) ").lower()
@@ -343,6 +347,16 @@ while True:
                             console.print("[red] Invalid Option")
                 else:
                     console.print("[red] Invalid option")
+        
+        elif user == 'whois':
+            try:
+                whoisweb = input("Enter website to be searched: ")
+                whoisweb = normalize(whoisweb)
+                info = whois.whois(whoisweb)
+                print(info)
+            except whois.parser.PywhoisError:
+                print("Invalid website or server not reachable.")
+
         
         elif user == 'reset':
             websiteagain = input("Enter new website: ")
@@ -392,3 +406,4 @@ while True:
     except rqs.exceptions.RequestException as e:  
         print(f"An error occurred: {e}")
         exit()
+
