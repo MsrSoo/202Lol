@@ -11,6 +11,9 @@ on:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    permissions:
+      actions: write # Required to delete caches
+      contents: read # Required to fetch branch information
     steps:
       - name: Cleanup caches
         run: |
