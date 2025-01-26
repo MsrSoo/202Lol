@@ -59,7 +59,7 @@ python3 main.py
 
 ## Upcoming features
 
-- [ ] WHOIS lookups
+- [x] WHOIS lookups
 
 ## Contribution Guidelines
 Contributions are welcome! If you’re interested in helping improve the repo, please consider the following:
