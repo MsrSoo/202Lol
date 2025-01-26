@@ -2,3 +2,4 @@ halo
 rich
 requests
 tqdm
+python-whois
