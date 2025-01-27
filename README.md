@@ -60,6 +60,8 @@ python3 main.py
 ## Upcoming features
 
 - [x] WHOIS lookups
+- [ ] Proxies
+- [ ] request cancelling
 
 ## Contribution Guidelines
 Contributions are welcome! If you’re interested in helping improve the repo, please consider the following:
