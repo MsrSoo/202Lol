@@ -9,6 +9,7 @@ import os
 import whois
 import gc
 import socket
+import logging
 
 
 def clear():
@@ -54,10 +55,12 @@ payloadspin = Halo(text="Preparing payload...", spinner="dots")
 jarspin = Halo(text="Building Jar...", spinner="dots")
 spinner = Halo(text="", spinner="dots")
 
-proxies = {
-    "http": "http://14.103.37.14:9100",
-    "https": "http://100.26.69.61:63736",
-}
+logging.basicConfig(
+    filename="main.log",
+    encoding="utf-8",
+    level=logging.DEBUG,
+    format="%(levelname)s: %(message)s",
+)
 
 
 def normalize(website):
@@ -68,7 +71,7 @@ def normalize(website):
 
 def poke_website(url):
     try:
-        response = rqs.get(url, stream=True)
+        response = rqs.get(url, stream=True, timeout=timeout)
 
         hostname = url.split("//")[-1].split("/")[0]
         ip_address = socket.gethostbyname(hostname)
@@ -97,15 +100,18 @@ def poke_website(url):
 
         response.close()
     except rqs.exceptions.RequestException as e:
-        print(f"Error during request: {e}")
+        console.print("[bold red] Error during request, please  consult log file.")
+        logging.error({e})
     except socket.gaierror as e:
-        print(f"Error in DNS resolution: {e}")
+        console.print("[bold red]Error in DNS resolution, please consult log file.")
+        logging.error({e})
 
 
 try:
     website = input("Website url: ").lower()
     website = normalize(website)
-    r = rqs.get(website, timeout=15)
+    timeout = 15
+    r = rqs.get(website, timeout=timeout)
     webspin.start()
     time.sleep(4)
     response = r.status_code
@@ -117,16 +123,16 @@ try:
         webspin.stop()
 except KeyboardInterrupt:
     print("\nTerminated by user.")
-    exit()
 except rqs.exceptions.ConnectionError as e:
-    print(f"Connection error: {e}")
-    exit()
+    console.print(
+        "[bold red] A connection error ocurred or server not reachable, please see log file"
+    )
+    logging.error({e})
 except rqs.exceptions.Timeout:
     print("The request timed out.")
-    exit()
 except rqs.exceptions.RequestException as e:
-    print(f"An error occurred: {e}")
-    exit()
+    console.print("[bold red] Exception error ocurred, please see log file.")
+    logging.error({e})
 
 while True:
     try:
@@ -140,6 +146,7 @@ while True:
             "whois",
             "proxy",
             "poke",
+            "timeout-config",
         ]
         user = input("\n>> ").lower()
         if user not in choices:
@@ -175,7 +182,7 @@ while True:
                     console.print(f"[bold cyan] Sending requests...")
                     gc.disable()
                     for i in tqdm(range(int(cookienumber))):
-                        jarequest = rqs.get(jargeturl, cookies=jarget, timeout=3)
+                        jarequest = rqs.get(jargeturl, cookies=jarget, timeout=timeout)
                     gc.collect()
                     gc.enable()
                     printresult_jar = input(
@@ -196,7 +203,7 @@ while True:
                     gc.disable()
                     console.print(f"[bold cyan] Sending requests...")
                     for i in tqdm(range(int(numberget))):
-                        rget = rqs.get(website, params=payloadget, timeout=3)
+                        rget = rqs.get(website, params=payloadget, timeout=timeout)
                     gc.collect()
                     gc.enable()
                     printresult_nojar = input(
@@ -215,7 +222,7 @@ while True:
                 gc.disable()
                 console.print(f"[bold cyan] Sending requests...")
                 for i in tqdm(range(int(numberget))):
-                    rget = rqs.get(website, params=payloadget, timeout=3)
+                    rget = rqs.get(website, params=payloadget, timeout=timeout)
                 gc.collect()
                 gc.enable()
                 printresult_nocookies = input(
@@ -261,7 +268,9 @@ while True:
                     console.print(f"[bold cyan] Sending requests...")
                     gc.disable()
                     for i in tqdm(range(int(galletanumber))):
-                        jarequestpost = rqs.post(jarposturl, cookies=jarpost, timeout=3)
+                        jarequestpost = rqs.post(
+                            jarposturl, cookies=jarpost, timeout=timeout
+                        )
                     gc.collect()
                     gc.enable()
                     printresult_jarredo = input(
@@ -283,7 +292,7 @@ while True:
                     console.print(f"[bold cyan] Sending requests...")
                     gc.disable()
                     for i in tqdm(range(int(numberpost))):
-                        rpost = rqs.post(website, params=payloadpost, timeout=3)
+                        rpost = rqs.post(website, params=payloadpost, timeout=timeout)
                     gc.collect()
                     gc.enable()
                     printresult_nojarredo = input(
@@ -302,7 +311,7 @@ while True:
                 console.print(f"[bold cyan] Sending requests...")
                 gc.disable()
                 for i in tqdm(range(int(numberpost))):
-                    rpost = rqs.post(website, params=payloadpost, timeout=3)
+                    rpost = rqs.post(website, params=payloadpost, timeout=timeout)
                 gc.collect()
                 gc.enable()
                 printresult_nogalleta = input(
@@ -336,7 +345,7 @@ while True:
                     console.print("[red] Invalid choice")
                 elif rqstype == "post":
                     spinner.start("Preparing payload...")
-                    rfilepost = rqs.post(website, files=filecontent, timeout=10)
+                    rfilepost = rqs.post(website, files=filecontent, timeout=timeout)
                     time.sleep(1.2)
                     spinner.stop()
                     afileresult = input(
@@ -350,7 +359,7 @@ while True:
                         console.print("[red] Invalid Option")
                 elif rqstype == "get":
                     spinner.start("Preparing payload...")
-                    rfileget = rqs.get(website, files=filecontent, timeout=10)
+                    rfileget = rqs.get(website, files=filecontent, timeout=timeout)
                     time.sleep(1.2)
                     spinner.stop()
                     bfileresult = input(
@@ -407,7 +416,7 @@ while True:
                         time.sleep(1)
                         for i in tqdm(range(int(numreq))):
                             autowritepost = rqs.post(
-                                website, files=autofilecontent, timeout=3
+                                website, files=autofilecontent, timeout=timeout
                             )
                         time.sleep(0.5)
                         ffileresult = input(
@@ -423,7 +432,7 @@ while True:
                         console.print(f"[bold cyan] Sending payload...")
                         for i in tqdm(range(int(numreq))):
                             autowriteget = rqs.get(
-                                website, files=autofilecontent, timeout=3
+                                website, files=autofilecontent, timeout=timeout
                             )
                         ffileresult = input(
                             "Do you want to print the response and cookies? (y/n) "
@@ -447,7 +456,9 @@ while True:
                     if writetype not in requestchoice:
                         console.print("[red] Invalid choice")
                     elif writetype == "post":
-                        writepost = rqs.post(website, files=writecontent, timeout=5)
+                        writepost = rqs.post(
+                            website, files=writecontent, timeout=timeout
+                        )
                         cfileresult = input(
                             "Do you want to print the response and cookies? (y/n)"
                         ).lower()
@@ -458,7 +469,7 @@ while True:
                         else:
                             console.print("[red]Invalid Option")
                     elif writetype == "get":
-                        writeget = rqs.get(website, files=writecontent, timeout=5)
+                        writeget = rqs.get(website, files=writecontent, timeout=timeout)
                         dfileresult = input(
                             "Do you want to print the response and cookies? (y/n)"
                         ).lower()
@@ -483,7 +494,7 @@ while True:
         elif user == "reset":
             websiteagain = input("Enter new website: ")
             websiteagain = normalize(websiteagain)
-            rg = rqs.get(websiteagain, timeout=15)
+            rg = rqs.get(websiteagain, timeout=timeout)
             webspin.start()
             time.sleep(4)
             response = r.status_code
@@ -497,19 +508,12 @@ while True:
                 )
                 webspin.stop()
 
-        elif user == "proxy":
-            newhttp = input("http proxy: ")
-            newhttps = input("https proxy: ")
-
-            if newhttp:
-                proxies["http"] = newhttp
-            if newhttps:
-                proxies["https"] = newhttps
-
-            print("Updated proxies")
-
         elif user == "poke":
             poke_website(website)
+
+        elif user == "timeout-config":
+            newtime = int(input("Enter new timeout: "))
+            timeout = newtime
 
         elif user == "help":
             console.print(
@@ -525,6 +529,7 @@ while True:
             whois - fetch whois information
             proxy - define proxy/ies to use (leave inputs blank to set to none)
             poke - make an incomplete request that recons info
+            timeout-config - customize your timeout time in seconds
             exit - end the script session
             help - show this message
 
@@ -542,11 +547,12 @@ while True:
         break
 
     except rqs.exceptions.ConnectionError as e:
-        print(f"Connection error: {e}")
-        exit()
+        console.print(
+            "[bold red] A connection error ocurred or server not reachable, please see log file."
+        )
+        logging.error({e})
     except rqs.exceptions.Timeout:
         print("The request timed out.")
-        exit()
     except rqs.exceptions.RequestException as e:
-        print(f"An error occurred: {e}")
-        exit()
+        console.print("[bold red] Exception error ocurred, please see log file.")
+        logging.error({e})
