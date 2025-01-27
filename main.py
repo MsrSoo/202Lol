@@ -55,20 +55,22 @@ jarspin = Halo(text="Building Jar...", spinner="dots")
 spinner = Halo(text="", spinner="dots")
 
 proxies = {
-    'http': 'http://14.103.37.14:9100',
-    'https': 'http://100.26.69.61:63736',
+    "http": "http://14.103.37.14:9100",
+    "https": "http://100.26.69.61:63736",
 }
+
 
 def normalize(website):
     if not website.startswith(("http://", "https://")):
         website = "http://" + website
     return website
 
+
 def poke_website(url):
     try:
         response = rqs.get(url, stream=True)
 
-        hostname = url.split('//')[-1].split('/')[0]
+        hostname = url.split("//")[-1].split("/")[0]
         ip_address = socket.gethostbyname(hostname)
 
         print(f"Website URL: {url}")
@@ -91,13 +93,14 @@ def poke_website(url):
                 print(f"{cookie.name}: {cookie.value}")
 
         print("\nConnection details:")
-        print(f"Protocol: {response.raw.version}") 
+        print(f"Protocol: {response.raw.version}")
 
         response.close()
     except rqs.exceptions.RequestException as e:
         print(f"Error during request: {e}")
     except socket.gaierror as e:
         print(f"Error in DNS resolution: {e}")
+
 
 try:
     website = input("Website url: ").lower()
@@ -127,7 +130,17 @@ except rqs.exceptions.RequestException as e:
 
 while True:
     try:
-        choices = ["post", "get", "file", "exit", "help", "reset", "whois", "proxy", "poke"]
+        choices = [
+            "post",
+            "get",
+            "file",
+            "exit",
+            "help",
+            "reset",
+            "whois",
+            "proxy",
+            "poke",
+        ]
         user = input("\n>> ").lower()
         if user not in choices:
             console.print("[red] Invalid command, please enter a valid one.")
@@ -483,21 +496,20 @@ while True:
                     "Error: Website could not be reached. Please enter a valid url"
                 )
                 webspin.stop()
-        
+
         elif user == "proxy":
             newhttp = input("http proxy: ")
             newhttps = input("https proxy: ")
 
             if newhttp:
-                proxies['http'] = newhttp
+                proxies["http"] = newhttp
             if newhttps:
-                proxies['https'] = newhttps
+                proxies["https"] = newhttps
 
             print("Updated proxies")
 
         elif user == "poke":
             poke_website(website)
-
 
         elif user == "help":
             console.print(
