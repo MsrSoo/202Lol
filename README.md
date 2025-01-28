@@ -60,8 +60,8 @@ python3 main.py
 ## Upcoming features
 
 - [x] WHOIS lookups
-- [ ] Proxies
-- [ ] tor traffic routing
+- [x] Proxies
+- [x] tor traffic routing
 - [ ] threading
 
 ## Contribution Guidelines
