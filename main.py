@@ -199,7 +199,7 @@ while True:
             "whois",
             "proxies-socks",
             "proxies-http",
-            "poke",
+            "config-proxies" "poke",
             "timeout-config",
             "tor-enable",
             "tor-disable",
@@ -676,7 +676,8 @@ while True:
             tor-disable - Disable tor traffic routing
             proxies-socks - Configure your socks proxies
             proxies-http - Configure your http proxies
-            exit - end the script session
+            config-proxies - Define which proxy to use, http or SOCKS5
+            exit - end the session
             help - show this message
 
             ===========================
