@@ -61,6 +61,8 @@ python3 main.py
 
 - [x] WHOIS lookups
 - [ ] Proxies
+- [ ] tor traffic routing
+- [ ] threading
 
 ## Contribution Guidelines
 Contributions are welcome! If you’re interested in helping improve the repo, please consider the following:
