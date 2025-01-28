@@ -613,7 +613,7 @@ while True:
 
             if newhttp:
                 hproxies["http"] = newhttp
-            elif newshttps:
+            elif newhttps:
                 hproxies["https"] = newhttps
 
         elif user == "tor-enable":
@@ -649,7 +649,9 @@ while True:
                     default = torproxies
                     console.print("[green] configured the proxy to use successfully")
             except Exception as e:
-                console.print("[bold red] Got an unexpected error, please check log file.")
+                console.print(
+                    "[bold red] Got an unexpected error, please check log file."
+                )
                 logging.error({e})
 
         elif user == "timeout-config":
