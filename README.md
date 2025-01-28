@@ -32,6 +32,10 @@
 - python 3.8 or later
 - pip
 - git
+- tor (optional)
+
+> you need to download tor yourself.
+
 
 ```bash
 git clone https://github.com/LifelagCheats/202Lol
@@ -39,7 +43,25 @@ cd 202Lol
 pip install -r requirements.txt
 python3 main.py
 ```
+
 > If you can't git clone this locally, i made it possible so that you can run it on replit.
+
+<details>
+  
+<summary> Tor configuration </summary>
+
+> This is for systemd based linux distros, so you'll have to find another way if you use another os or another init system.
+```
+tor --hash-password "your_password" # basically, just enter the password that you want for tor, you will get a hash (like this 16:HASH), copy the thing after the 16
+sudo nano /etc/tor/torrc
+HashedControlPassword your_hashed_password # edit that line, replace your_hashed_password with the hash you got
+sudo systemctl restart tor
+sudo systemctl start tor
+```
+> If you want to check your config, do `sudo tor -f /etc/tor/torrc --verify-config` . If you want to see the proxies are working do `curl --proxy socks5h://127.0.0.1:9050 http://check.torproject.org`
+
+
+</details>
 
 ### Tested Operating Systems
 <table>
