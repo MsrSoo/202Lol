@@ -61,6 +61,10 @@ sudo systemctl start tor
 > If you want to check your config, do `sudo tor -f /etc/tor/torrc --verify-config` . If you want to see the proxies are working do `curl --proxy socks5h://127.0.0.1:9050 http://check.torproject.org`
 
 
+**If you're having problems, make sure on the config file (mostly located at /etc/tor/torrc), has the value `ControlPort 9051`.**
+**You might also want to check if tor is listening on the ports with `ss -tlnp | grep 9050`.**
+
+
 </details>
 
 ### Tested Operating Systems
