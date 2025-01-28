@@ -1,15 +1,18 @@
+import base64
+import gc
+import logging
+import os
+import socket
+import subprocess
+import time
+
 import requests as rqs
+import whois
+from halo import Halo
 from rich.console import Console
 from tqdm import tqdm
-import time
-from halo import Halo
-import subprocess
-import base64
-import os
-import whois
-import gc
-import socket
-import logging
+from stem.control import Controller
+from stem.connection import IncorrectPassword
 
 
 def clear():
@@ -62,6 +65,20 @@ logging.basicConfig(
     format="%(levelname)s: %(message)s",
 )
 
+torproxies = {
+    "http": "socks5h://127.0.0.1:9050",
+    "https": "socks5h://127.0.0.1:9050",
+}
+
+hproxies = {
+    "http": "http://188.114.98.233:80",
+    "https": "http://172.67.181.10:80",
+}
+
+default = hproxies
+
+torenabled = False
+
 
 def normalize(website):
     if not website.startswith(("http://", "https://")):
@@ -107,11 +124,47 @@ def poke_website(url):
         logging.error({e})
 
 
+def tor_enable():
+    password = input("Tor password: ")
+    with Controller.from_port(port=9051) as controller:
+        controller.authenticate(password=password)  # Replace with your Tor password
+        controller.signal("NEWNYM")  # Request a new identity
+
+    try:
+        toresponse = rqs.get("http://check.torproject.org", proxies=default, timeout=10)
+        if "Congratulations. This browser is configured to use Tor" in toresponse.text:
+            console.print("[green] Traffic is routed through Tor!")
+        else:
+            console.print("[red] Traffic is NOT routed through Tor.")
+    except IncorrectPassword as e:
+        console.print("[bold red] Incorrect password.")
+        logging.error({e})
+    except Exception as e:
+        console.print("[bold red] Got an unexpected error, please check log file.")
+        logging.error({e})
+
+
+def tor_disable():
+    try:
+        password = input("Tor password: ")
+        with Controller.from_port(port=9051) as controller:
+            try:
+                controller.authenticate(password=password)
+                controller.signal("SHUTDOWN")
+                console.print("[green] Disabled tor traffic routing")
+            except IncorrectPassword as e:
+                console.print("[bold red] Incorrect password.")
+                logging.error({e})
+    except Exception as e:
+        console.print("[bold red] Got unexpected error, please check log file")
+        logging.error({e})
+
+
 try:
     website = input("Website url: ").lower()
     website = normalize(website)
     timeout = 15
-    r = rqs.get(website, timeout=timeout)
+    r = rqs.get(website, timeout=timeout, proxies=default)
     webspin.start()
     time.sleep(4)
     response = r.status_code
@@ -144,9 +197,12 @@ while True:
             "help",
             "reset",
             "whois",
-            "proxy",
+            "proxies-socks",
+            "proxies-http",
             "poke",
             "timeout-config",
+            "tor-enable",
+            "tor-disable",
         ]
         user = input("\n>> ").lower()
         if user not in choices:
@@ -182,7 +238,9 @@ while True:
                     console.print(f"[bold cyan] Sending requests...")
                     gc.disable()
                     for i in tqdm(range(int(cookienumber))):
-                        jarequest = rqs.get(jargeturl, cookies=jarget, timeout=timeout)
+                        jarequest = rqs.get(
+                            jargeturl, cookies=jarget, timeout=timeout, proxies=default
+                        )
                     gc.collect()
                     gc.enable()
                     printresult_jar = input(
@@ -203,7 +261,9 @@ while True:
                     gc.disable()
                     console.print(f"[bold cyan] Sending requests...")
                     for i in tqdm(range(int(numberget))):
-                        rget = rqs.get(website, params=payloadget, timeout=timeout)
+                        rget = rqs.get(
+                            website, params=payloadget, timeout=timeout, proxies=default
+                        )
                     gc.collect()
                     gc.enable()
                     printresult_nojar = input(
@@ -222,7 +282,9 @@ while True:
                 gc.disable()
                 console.print(f"[bold cyan] Sending requests...")
                 for i in tqdm(range(int(numberget))):
-                    rget = rqs.get(website, params=payloadget, timeout=timeout)
+                    rget = rqs.get(
+                        website, params=payloadget, timeout=timeout, proxies=default
+                    )
                 gc.collect()
                 gc.enable()
                 printresult_nocookies = input(
@@ -292,7 +354,12 @@ while True:
                     console.print(f"[bold cyan] Sending requests...")
                     gc.disable()
                     for i in tqdm(range(int(numberpost))):
-                        rpost = rqs.post(website, params=payloadpost, timeout=timeout)
+                        rpost = rqs.post(
+                            website,
+                            params=payloadpost,
+                            timeout=timeout,
+                            proxies=default,
+                        )
                     gc.collect()
                     gc.enable()
                     printresult_nojarredo = input(
@@ -311,7 +378,9 @@ while True:
                 console.print(f"[bold cyan] Sending requests...")
                 gc.disable()
                 for i in tqdm(range(int(numberpost))):
-                    rpost = rqs.post(website, params=payloadpost, timeout=timeout)
+                    rpost = rqs.post(
+                        website, params=payloadpost, timeout=timeout, proxies=default
+                    )
                 gc.collect()
                 gc.enable()
                 printresult_nogalleta = input(
@@ -345,7 +414,9 @@ while True:
                     console.print("[red] Invalid choice")
                 elif rqstype == "post":
                     spinner.start("Preparing payload...")
-                    rfilepost = rqs.post(website, files=filecontent, timeout=timeout)
+                    rfilepost = rqs.post(
+                        website, files=filecontent, timeout=timeout, proxies=default
+                    )
                     time.sleep(1.2)
                     spinner.stop()
                     afileresult = input(
@@ -359,7 +430,9 @@ while True:
                         console.print("[red] Invalid Option")
                 elif rqstype == "get":
                     spinner.start("Preparing payload...")
-                    rfileget = rqs.get(website, files=filecontent, timeout=timeout)
+                    rfileget = rqs.get(
+                        website, files=filecontent, timeout=timeout, proxies=default
+                    )
                     time.sleep(1.2)
                     spinner.stop()
                     bfileresult = input(
@@ -416,7 +489,10 @@ while True:
                         time.sleep(1)
                         for i in tqdm(range(int(numreq))):
                             autowritepost = rqs.post(
-                                website, files=autofilecontent, timeout=timeout
+                                website,
+                                files=autofilecontent,
+                                timeout=timeout,
+                                proxies=default,
                             )
                         time.sleep(0.5)
                         ffileresult = input(
@@ -432,7 +508,10 @@ while True:
                         console.print(f"[bold cyan] Sending payload...")
                         for i in tqdm(range(int(numreq))):
                             autowriteget = rqs.get(
-                                website, files=autofilecontent, timeout=timeout
+                                website,
+                                files=autofilecontent,
+                                timeout=timeout,
+                                proxies=default,
                             )
                         ffileresult = input(
                             "Do you want to print the response and cookies? (y/n) "
@@ -457,7 +536,10 @@ while True:
                         console.print("[red] Invalid choice")
                     elif writetype == "post":
                         writepost = rqs.post(
-                            website, files=writecontent, timeout=timeout
+                            website,
+                            files=writecontent,
+                            timeout=timeout,
+                            proxies=default,
                         )
                         cfileresult = input(
                             "Do you want to print the response and cookies? (y/n)"
@@ -469,7 +551,12 @@ while True:
                         else:
                             console.print("[red]Invalid Option")
                     elif writetype == "get":
-                        writeget = rqs.get(website, files=writecontent, timeout=timeout)
+                        writeget = rqs.get(
+                            website,
+                            files=writecontent,
+                            timeout=timeout,
+                            proxies=default,
+                        )
                         dfileresult = input(
                             "Do you want to print the response and cookies? (y/n)"
                         ).lower()
@@ -494,7 +581,7 @@ while True:
         elif user == "reset":
             websiteagain = input("Enter new website: ")
             websiteagain = normalize(websiteagain)
-            rg = rqs.get(websiteagain, timeout=timeout)
+            rg = rqs.get(websiteagain, timeout=timeout, proxies=default)
             webspin.start()
             time.sleep(4)
             response = r.status_code
@@ -510,6 +597,60 @@ while True:
 
         elif user == "poke":
             poke_website(website)
+
+        elif user == "proxies-socks":
+            newsocks1 = input("Enter the new http socks proxy: ")
+            newsocks2 = input("Enter the new https socks proxy: ")
+
+            if newsocks1:
+                torproxies["http"] = newsocks1
+            elif newsocks2:
+                torproxies["https"] = newsocks2
+
+        elif user == "proxies-http":
+            newhttp = input("Enter the http proxy: ")
+            newhttps = input("Enter the https proxy: ")
+
+            if newhttp:
+                hproxies["http"] = newhttp
+            elif newshttps:
+                hproxies["https"] = newhttps
+
+        elif user == "tor-enable":
+            try:
+                if torenabled == True:
+                    console.print("[yellow] Tor traffic routing is already enabled!")
+                else:
+                    tor_enable()
+                    torenabled = True
+            except Exception as e:
+                console.print(
+                    "[bold red] Got an unexpected error, please check log file."
+                )
+                logging.error({e})
+        elif user == "tor-disable":
+            try:
+                if torenabled == False:
+                    console.print("[yellow] Tor traffic routing is already disabled!")
+                else:
+                    tor_disable()
+                    torenabled = False
+            except Exception as e:
+                console.print(
+                    "[bold red] Got an unexpected error, please check log file."
+                )
+                logging.error({e})
+        elif user == "config-proxies":
+            try:
+                if default == hproxies:
+                    default = torproxies
+                    console.print("[green] configured the proxy to use successfully")
+                else:
+                    default = torproxies
+                    console.print("[green] configured the proxy to use successfully")
+            except Exception as e:
+                console.print("[bold red] Got an unexpected error, please check log file.")
+                logging.error({e})
 
         elif user == "timeout-config":
             newtime = int(input("Enter new timeout: "))
@@ -527,9 +668,12 @@ while True:
             post - send a request of type post; you can choose between adding cookies or not
             reset - define a new website
             whois - fetch whois information
-            proxy - define proxy/ies to use (leave inputs blank to set to none)
             poke - make an incomplete request that recons info
             timeout-config - customize your timeout time in seconds
+            tor-enable - Enable tor traffic routing
+            tor-disable - Disable tor traffic routing
+            proxies-socks - Configure your socks proxies
+            proxies-http - Configure your http proxies
             exit - end the script session
             help - show this message
 
