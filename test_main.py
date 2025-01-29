@@ -1,6 +1,7 @@
 import pytest
 import requests
 import socket
+import subprocess
 from unittest.mock import patch, MagicMock
 from main import normalize, poke_website, clear, torproxies, hproxies
 
