@@ -20,7 +20,7 @@ test:
 	pytest -vs
 
 coverage:
-	pytest --cov=. --cov-report=term-missing --cov-report=html
+	pytest --cov=. --cov-report=term-missing --cov-report=html -s
 
 security:
 	bandit -r .
