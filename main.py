@@ -71,14 +71,15 @@ torproxies = {
 }
 
 hproxies = {
-    "http": "http://188.114.98.233:80",
-    "https": "http://172.67.181.10:80",
+    "http": "http://65.1.244.232:1080",
+    "https": "http://65.1.244.232:1080",
 }
 
 default = hproxies
 
 torenabled = False
 
+timeout = 10
 
 def normalize(website):
     if not website.startswith(("http://", "https://")):
@@ -173,6 +174,7 @@ try:
         webspin.stop()
     else:
         spinner.fail("Error: Website could not be reached. Please enter a valid url")
+        logging.debug(response)
         webspin.stop()
 except KeyboardInterrupt:
     print("\nTerminated by user.")
@@ -199,7 +201,8 @@ while True:
             "whois",
             "proxies-socks",
             "proxies-http",
-            "config-proxies" "poke",
+            "config-proxies", 
+            "poke",
             "timeout-config",
             "tor-enable",
             "tor-disable",
@@ -644,10 +647,10 @@ while True:
             try:
                 if default == hproxies:
                     default = torproxies
-                    console.print("[green] configured the proxy to use successfully")
+                    console.print("[green] configured the proxy to use tor socks successfully")
                 else:
                     default = torproxies
-                    console.print("[green] configured the proxy to use successfully")
+                    console.print("[green] configured the proxy to use http proxies successfully")
             except Exception as e:
                 console.print(
                     "[bold red] Got an unexpected error, please check log file."
