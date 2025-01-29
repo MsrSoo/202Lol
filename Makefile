@@ -5,6 +5,7 @@ PYTHON := python3
 install:
 	$(PYTHON) -m pip install -r requirements.txt
 	$(PYTHON) -m pip install black mypy pytest pytest-mock pytest-cov requests stem whois halo rich tqdm bandit safety flake8 pylint
+	$(PYTHON) -m pip install --upgrade pip
 
 lint:
 	mypy . --ignore-missing-imports
