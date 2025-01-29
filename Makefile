@@ -17,10 +17,10 @@ format:
 	black .
 
 test:
-	pytest -vs
+	pytest ./test_main.py -vs
 
 coverage:
-	pytest --cov=. --cov-report=term-missing --cov-report=html -s
+	pytest --cov=. --cov-report=term-missing --cov-report=html -s ./test_main.py
 
 security:
 	bandit -r .
