@@ -81,6 +81,7 @@ torenabled = False
 
 timeout = 10
 
+
 def normalize(website):
     if not website.startswith(("http://", "https://")):
         website = "http://" + website
@@ -201,7 +202,7 @@ while True:
             "whois",
             "proxies-socks",
             "proxies-http",
-            "config-proxies", 
+            "config-proxies",
             "poke",
             "timeout-config",
             "tor-enable",
@@ -647,10 +648,14 @@ while True:
             try:
                 if default == hproxies:
                     default = torproxies
-                    console.print("[green] configured the proxy to use tor socks successfully")
+                    console.print(
+                        "[green] configured the proxy to use tor socks successfully"
+                    )
                 else:
                     default = torproxies
-                    console.print("[green] configured the proxy to use http proxies successfully")
+                    console.print(
+                        "[green] configured the proxy to use http proxies successfully"
+                    )
             except Exception as e:
                 console.print(
                     "[bold red] Got an unexpected error, please check log file."
