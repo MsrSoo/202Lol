@@ -17,7 +17,7 @@ format:
 	black .
 
 test:
-	pytest -v
+	pytest -vs
 
 coverage:
 	pytest --cov=. --cov-report=term-missing --cov-report=html
