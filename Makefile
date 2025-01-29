@@ -1,8 +1,8 @@
 .PHONY: install lint format test run
 
 install:
-	pip install -r requirements.txt
-	pip install black mypy
+	$(shell which python3) -m pip install -r requirements.txt
+	$(shell which python3) -m pip install black mypy
 
 lint:
 	mypy . --ignore-missing-imports
