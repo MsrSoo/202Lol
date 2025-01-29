@@ -1,18 +1,44 @@
-.PHONY: install lint format test run
+.PHONY: install lint format test run security clean coverage bandit safety
+
+PYTHON := python3
 
 install:
-	$(shell which python3) -m pip install -r requirements.txt
-	$(shell which python3) -m pip install black mypy
+	$(PYTHON) -m pip install -r requirements.txt
+	$(PYTHON) -m pip install black mypy pytest pytest-mock pytest-cov requests stem whois halo rich tqdm bandit safety flake8 pylint
 
 lint:
 	mypy . --ignore-missing-imports
 	black --check .
+	flake8 .
+	pylint *.py
 
 format:
 	black .
 
 test:
-	pytest
+	pytest -v
+
+coverage:
+	pytest --cov=. --cov-report=term-missing --cov-report=html
+
+security:
+	bandit -r .
+	safety check
+	pip-audit
+
+clean:
+	rm -rf __pycache__
+	rm -rf .pytest_cache
+	rm -rf .coverage
+	rm -rf htmlcov
+	rm -rf .mypy_cache
+	rm -rf *.log
 
 run:
-	python main.py
+	$(PYTHON) main.py
+
+requirements:
+	pip freeze > requirements.txt
+
+precommit: lint security test coverage
+	@echo "All checks passed!"
