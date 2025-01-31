@@ -1,4 +1,4 @@
-name: Cyberpunk Changelog Generator
+name: Changelog Generator
 
 on:
   push:
@@ -43,9 +43,9 @@ jobs:
           [git]
           conventional_commits = true
           commit_parsers = [
-              { message = "^feat", group = " Features" },
+              { message = "^feat", group = " Features" },
               { message = "^fix", group = " Fixes" },
-              { message = "^docs", group = " Documentation" },
+              { message = "^docs", group = "  Documentation" },
               { message = "^refactor", group = " Refactors" },
               { message = "^chore", group = " Maintenance" },
               { message = "^test", group = " Tests" },
@@ -71,13 +71,13 @@ jobs:
 
       - name:  Commit Changes
         run: |
-          git config --global user.name "󱓞 Cybernetic Agent"
+          git config --global user.name "󱓞 Changelog Bot"
           git config --global user.email "sysadmin@neural.link"
           
           if git diff --quiet CHANGELOG.md; then
-            echo "󰌜 No changelog updates required"
+            echo "No changelog updates required"
           else
             git add CHANGELOG.md
-            git commit -m "󰓅 Update cyberlog: $(date +'%Y-%m-%d %H:%M:%S')"
+            git commit -m "Update cyberlog: $(date +'%Y-%m-%d %H:%M:%S')"
             git push
           fi
