@@ -111,11 +111,11 @@ Your support is greatly appreciated, as I am a solo developer and still learning
 ## Contributors
 (thanks to all of you!)
 <div align="center">
-  <a href="https://github.com/LifelagCheats/miliping/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=LifelagCheats/miliping" />
+  <a href="https://github.com/LifelagCheats/202Lol/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=LifelagCheats/202Lol" />
   </a>
 </div>
 
 ## Star history
 
-[![Star History Chart](https://api.star-history.com/svg?repos=LifelagCheats/miliping&type=Date)](https://star-history.com/#LifelagCheats/202Lol&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=LifelagCheats/202Lol&type=Date)](https://star-history.com/#LifelagCheats/202Lol&Date)
