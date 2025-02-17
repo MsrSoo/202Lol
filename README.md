@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/202.png" alt="Logo" width="400"/>
+<img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/miliping.gif" alt="Logo" width="400"/>
 
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)
 ![Maintained](https://img.shields.io/badge/maintained-Yes-green)
@@ -42,7 +42,7 @@
 <br>
 
 ```bash
-git clone https://github.com/LifelagCheats/202Lol
+git clone https://github.com/LifelagCheats/miliping
 cd 202Lol
 pip install -r requirements.txt
 python3 main.py
@@ -111,11 +111,11 @@ Your support is greatly appreciated, as I am a solo developer and still learning
 ## Contributors
 (thanks to all of you!)
 <div align="center">
-  <a href="https://github.com/LifelagCheats/202Lol/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=LifelagCheats/202Lol" />
+  <a href="https://github.com/LifelagCheats/miliping/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=LifelagCheats/miliping" />
   </a>
 </div>
 
 ## Star history
 
-[![Star History Chart](https://api.star-history.com/svg?repos=LifelagCheats/202Lol&type=Date)](https://star-history.com/#LifelagCheats/202Lol&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=LifelagCheats/miliping&type=Date)](https://star-history.com/#LifelagCheats/202Lol&Date)
