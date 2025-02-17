@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://github.com/LifelagCheats/202Lol/image1.png" alt="Logo">
+<img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/202Lol.png" alt="Logo">
 
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)
 ![Maintained](https://img.shields.io/badge/maintained-Yes-green)
