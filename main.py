@@ -5,6 +5,7 @@ import os
 import socket
 import subprocess
 import time
+import random
 
 import requests as rqs
 import whois
@@ -33,25 +34,41 @@ clear()
 
 console = Console()
 
-console.print(
-    """[bold cyan]
+color_palettes = {
+    "blue": ["#4c4cff", "#6666ff", "#8080ff", "#9999ff"],
+    "cyan": ["#66ffff", "#80ffff", "#99ffff", "#b3ffff"]
+}
 
+# List of hacking/programming quotes
+quotes = [
+    "“Talk is cheap. Show me the code.”",
+    "“The best way to predict the future is to implement it.”",
+    "“There is only one way to eat an elephant: a byte at a time.”",
+    "“It’s not a bug – it’s an undocumented feature.”",
+    "“Code is like humor. When you have to explain it, it’s bad.”",
+    "“Programs must be written for people to read, and only incidentally for machines to execute.”"
+]
 
+# Select a random color palette and quote
+selected_color = random.choice(list(color_palettes.keys()))
+shades = color_palettes[selected_color]
+quote = random.choice(quotes)
 
+# Generate styled ASCII text
+ascii_text = f"""
+[{shades[0]}]██████╗  ██████╗ ██████╗ ██╗      ██████╗ ██╗    
+[{shades[1]}]╚════██╗██╔═████╗╚════██╗██║     ██╔═══██╗██║     
+ [{shades[2]}]█████╔╝██║██╔██║ █████╔╝██║     ██║   ██║██║    
+[{shades[3]}]██╔═══╝ ████╔╝██║██╔═══╝ ██║     ██║   ██║██║    
+[{shades[0]}]███████╗╚██████╔╝███████╗███████╗╚██████╔╝███████╗    
+[{shades[1]}]╚══════╝ ╚═════╝ ╚══════╝╚══════╝ ╚═════╝ ╚══════╝
 
-
-    ██████╗  ██████╗ ██████╗ ██╗      ██████╗ ██╗
-    ╚════██╗██╔═████╗╚════██╗██║     ██╔═══██╗██║
-     █████╔╝██║██╔██║ █████╔╝██║     ██║   ██║██║
-    ██╔═══╝ ████╔╝██║██╔═══╝ ██║     ██║   ██║██║
-    ███████╗╚██████╔╝███████╗███████╗╚██████╔╝███████╗
-    ╚══════╝ ╚═════╝ ╚══════╝╚══════╝ ╚═════╝ ╚══════╝
-
-
-
-                website requests handler
-"""
-)
+[{shades[2]}]Website Request Handler[/]
+            Made by LifelagCheats
+[{shades[3]}]{quote}[/]
+"""   
+# Print with random colors
+console.print(ascii_text)
 
 webspin = Halo(text="Checking website...", spinner="dots")
 payloadspin = Halo(text="Preparing payload...", spinner="dots")
