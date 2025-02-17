@@ -1,6 +1,6 @@
 <div align="center">
 
-![Logo](https://github.com/LifelagCheats/miliping/blob/main/assets/miliping.gif)
+<img src="https://github.com/LifelagCheats/202Lol/image1.png" alt="Logo">
 
 ![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)
 ![Maintained](https://img.shields.io/badge/maintained-Yes-green)
