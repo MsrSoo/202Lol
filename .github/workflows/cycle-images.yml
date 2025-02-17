@@ -13,7 +13,7 @@ jobs:
 
       - name: Cycle image and update README
         run: |
-          IMAGE_DIR="images"
+          IMAGE_DIR="assets"
           README_FILE="README.md"
 
           # List all images (sorted alphabetically)
