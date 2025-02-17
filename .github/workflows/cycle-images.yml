@@ -1,0 +1,58 @@
+name: Cycle Images and Update README
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'  # Run every 10 minutes
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cycle image and update README
+        run: |
+          IMAGE_DIR="images"
+          README_FILE="README.md"
+
+          # List all images (sorted alphabetically)
+          IMAGES=($(ls "$IMAGE_DIR"))
+          IMAGE_COUNT=${#IMAGES[@]}
+          if [ $IMAGE_COUNT -eq 0 ]; then
+            echo "No images found in $IMAGE_DIR"
+            exit 1
+          fi
+
+          # Extract current image from the README
+          current=$(grep -oP '(?<=<img src=")[^"]*(?=" alt="Logo")' "$README_FILE")
+          
+          # Find the index of the current image; default to -1 if not found
+          idx=-1
+          for i in "${!IMAGES[@]}"; do
+            if [ "${IMAGES[$i]}" == "$(basename "$current")" ]; then
+              idx=$i
+              break
+            fi
+          done
+
+          # Calculate next index (if not found, use first image)
+          next_idx=$(( (idx + 1) % IMAGE_COUNT ))
+          next_image="${IMAGES[$next_idx]}"
+
+          # Generate the new HTML image tag
+          new_line="<img src=\"$IMAGE_DIR/$next_image\" alt=\"Logo\" width=\"400\"/>"
+
+          # Replace the existing image tag in README
+          sed -i "s|<img src=\"[^\"]*\" alt=\"Logo\" width=\"400\"/>|$new_line|" "$README_FILE"
+
+          # Commit and push if there's a change
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add "$README_FILE"
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Cycle image in README"
+            git push
+          else
+            echo "No changes to commit."
+          fi
