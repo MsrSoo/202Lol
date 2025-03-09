@@ -95,7 +95,7 @@ sudo systemctl start tor
 </table>
 
 > [!NOTE]
-> Should be overal compatible with every OS, but i can't guarantee for windows users as i haven't tried.
+> Should be overall compatible with every OS, but i can't guarantee for windows users as i haven't tried.
 
 
 ## Upcoming features
