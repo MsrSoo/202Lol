@@ -79,7 +79,7 @@ sudo systemctl start tor
 
 ### Example Usage
 <div align="center">
-  <img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/example.png" alt="example image">
+  <img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/Example.png" alt="example image">
 </div>
 
 ### Tested Operating Systems
