@@ -1,6 +1,6 @@
 {
   "scanSettings": {
-    "baseBranches": []
+    "baseBranches": ["main"]
   },
   "checkRunSettings": {
     "vulnerableCheckRunConclusionLevel": "failure",
@@ -8,7 +8,11 @@
     "useMendCheckNames": true
   },
   "issueSettings": {
-    "minSeverityLevel": "LOW",
+    "minSeverityLevel": "MEDIUM",
     "issueType": "DEPENDENCY"
+  },
+  "reportSettings": {
+    "generateHtmlReport": true,
+    "outputDirectory": "whitesource-reports"
   }
 }
