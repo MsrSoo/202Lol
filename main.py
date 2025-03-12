@@ -605,7 +605,7 @@ while True:
             rg = rqs.get(websiteagain, timeout=timeout, proxies=default)
             webspin.start()
             time.sleep(4)
-            response = r.status_code
+            response = rg.status_code
             if response == 200:
                 spinner.succeed("Website is valid, Proceeding")
                 website = websiteagain
