@@ -28,6 +28,7 @@ additional:
   - `mend-release.yml`
   - `cache-cleanup.yml`
 - `auto-reponse.yml` to make people not feel like they're going to be left hanging
+- and also deleted `changelog-generator.yml` because it was annoying me whenever i was updating the `CHANGELOG.md` file
 
 ------------------------
 
