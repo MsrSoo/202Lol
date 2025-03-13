@@ -1,0 +1,12 @@
+bug:
+  - '*.py'
+
+fixes:
+  - '*.md'
+  - '.black'
+  - '.github/*'
+  - '*.ini'
+
+linting corrections:
+  - 'setup.cfg'
+
