@@ -6,3 +6,6 @@ contact_links:
   - name: "Feature Request"
     url: "./issues/new?template=feature-request.yml"
     about: "Request a new feature or improvement."
+  - name: "Discussion"
+    url: "https://github.com/202Lol/discussions"
+    about: "For more general questions, please refer the discussions site"
