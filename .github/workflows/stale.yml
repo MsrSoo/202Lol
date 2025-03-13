@@ -6,6 +6,10 @@ on:
 jobs:
   stale:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
     steps:
       - name: Close Stale Issues
         uses: actions/stale@v9.0.0
