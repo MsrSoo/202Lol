@@ -1,0 +1,63 @@
+name: "Support Request"
+about: "Need help with something? Ask here!"
+title: "[Support]: "
+labels: ["support", "question"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reaching out! Before submitting a support request, please check the [documentation](https://your-repo-docs.com) and [existing issues](https://github.com/your-repo/issues) to see if your question has already been answered.
+  
+  - type: input
+    id: summary
+    attributes:
+      label: "Brief Summary"
+      description: "Summarize your issue or question in a few words."
+      placeholder: "Example: How do I install this on Windows?"
+    validations:
+      required: true
+  
+  - type: textarea
+    id: details
+    attributes:
+      label: "Detailed Explanation"
+      description: "Describe your issue in detail, including what you’ve tried so far."
+      placeholder: "Explain the problem, expected behavior, and any steps you’ve taken to resolve it."
+    validations:
+      required: true
+  
+  - type: dropdown
+    id: environment
+    attributes:
+      label: "Environment"
+      description: "What platform are you using?"
+      options:
+        - "Windows"
+        - "MacOS"
+        - "Linux"
+        - "Other"
+    validations:
+      required: true
+  
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Error Messages & Logs (if applicable)"
+      description: "Paste any relevant error messages or logs here. Use triple backticks (```) for code formatting."
+      placeholder: "Example: ```Error: Something went wrong```"
+    validations:
+      required: false
+  
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: "Pre-submission Checklist"
+      options:
+        - label: "I have searched for similar issues before submitting this."
+          required: true
+        - label: "I have read the documentation."
+          required: true
+        - label: "I have provided enough details to understand the issue."
+          required: true
+
