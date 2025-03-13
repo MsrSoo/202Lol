@@ -3,6 +3,12 @@ on:
   issues:
     types: [opened]
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  actions: read
+
 jobs:
   comment:
     runs-on: ubuntu-latest

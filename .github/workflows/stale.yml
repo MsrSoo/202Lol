@@ -3,13 +3,14 @@ on:
   schedule:
     - cron: "0 0 * * *" # Runs daily at midnight UTC
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   stale:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-      issues: write
     steps:
       - name: Close Stale Issues
         uses: actions/stale@v9.0.0
