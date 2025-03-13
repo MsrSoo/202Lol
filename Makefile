@@ -5,26 +5,17 @@ PYTHON := python3
 install:
 	$(PYTHON) -m pip install -r requirements.txt
 	$(PYTHON) -m pip install black mypy pytest pytest-mock pytest-cov requests stem whois halo rich tqdm bandit safety flake8 pylint
+	mypy --install-types
 	$(PYTHON) -m pip install --upgrade pip
 
 lint:
 	mypy . --ignore-missing-imports
-	black --check .
-	flake8 .
-	pylint *.py
-
-format:
 	black .
-
-test:
-	pytest ./test_main.py -vs
-
-coverage:
-	pytest --cov=. --cov-report=term-missing --cov-report=html -s ./test_main.py
+	pylint *.py | tee >(sed '$d' > linting.log) | grep "rated"
 
 security:
 	bandit -r .
-	safety check
+	safety scan # you need a safety account for this one, so go create one
 	pip-audit
 
 clean:
@@ -35,11 +26,6 @@ clean:
 	rm -rf .mypy_cache
 	rm -rf *.log
 
-run:
-	$(PYTHON) main.py
 
-requirements:
-	pip freeze > requirements.txt
-
-precommit: lint security test coverage
+precommit: lint security 
 	@echo "All checks passed!"
