@@ -36,7 +36,7 @@ console = Console()
 
 color_palettes = {
     "blue": ["#4c4cff", "#6666ff", "#8080ff", "#9999ff"],
-    "cyan": ["#66ffff", "#80ffff", "#99ffff", "#b3ffff"]
+    "cyan": ["#66ffff", "#80ffff", "#99ffff", "#b3ffff"],
 }
 
 # List of hacking/programming quotes
@@ -46,7 +46,7 @@ quotes = [
     "“There is only one way to eat an elephant: a byte at a time.”",
     "“It’s not a bug – it’s an undocumented feature.”",
     "“Code is like humor. When you have to explain it, it’s bad.”",
-    "“Programs must be written for people to read, and only incidentally for machines to execute.”"
+    "“Programs must be written for people to read, and only incidentally for machines to execute.”",
 ]
 
 # Select a random color palette and quote
@@ -66,7 +66,7 @@ ascii_text = f"""
 [{shades[2]}]Website Request Handler[/]
             Made by LifelagCheats
 [{shades[3]}]{quote}[/]
-"""   
+"""
 # Print with random colors
 console.print(ascii_text)
 
