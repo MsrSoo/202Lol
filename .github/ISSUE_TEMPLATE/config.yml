@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "Bug Report"
+    url: "./issues/new?template=bug-report.yml"
+    about: "Report a bug by filling out the form."
+  - name: "Feature Request"
+    url: "./issues/new?template=feature-request.yml"
+    about: "Request a new feature or improvement."
