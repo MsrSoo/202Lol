@@ -16,3 +16,4 @@ ENV/
 *.iml
 *.sublime-text-*
 .env
+.safety-project.ini
