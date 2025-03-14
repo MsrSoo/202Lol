@@ -6,7 +6,6 @@ All system changes are documented below
 
 ## Version 1.0.1
 
---------------------
 
 bug fixes:
 - fixed bug on Makefile where linting wouldn't work
