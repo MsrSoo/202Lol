@@ -42,7 +42,7 @@
 <br>
 
 ```bash
-git clone https://github.com/LifelagCheats/miliping
+git clone https://github.com/LifelagCheats/202Lol
 cd 202Lol
 pip install -r requirements.txt
 python3 main.py
