@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /assets/
+Disallow: /VERSION
+Disallow: /CODEOWNERS
+Disallow: /.whitesource
+Disallow: /.replit
+
