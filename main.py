@@ -8,7 +8,6 @@ import time
 import random
 
 import requests as rqs
-import whois
 from halo import Halo
 from rich.console import Console
 from tqdm import tqdm
@@ -216,7 +215,6 @@ while True:
             "exit",
             "help",
             "reset",
-            "whois",
             "proxies-socks",
             "proxies-http",
             "config-proxies",
@@ -292,7 +290,10 @@ while True:
                     ).lower()
                     if printresult_nojar == "y":
                         print(rget.text)
-                        print(rget.cookies[cookieget])
+                        if cookieget in rget.cookies:
+                            print(rget.cookies[cookieget])
+                        else:
+                            print("Cookie not found")
                     elif printresult_nojar == "n":
                         pass
                     else:
@@ -388,7 +389,10 @@ while True:
                     ).lower()
                     if printresult_nojarredo == "y":
                         print(rpost.text)
-                        print(rpost.cookies[cookiepost])
+                        if cookiepost in rpost.cookies:
+                            print(rpost.cookies[cookiepost])
+                        else:
+                            print("Cookie not found")
                     elif printresult_nojarredo == "n":
                         pass
                     else:
@@ -589,16 +593,7 @@ while True:
                             console.print("[red] Invalid Option")
                 else:
                     console.print("[red] Invalid option")
-
-        elif user == "whois":
-            try:
-                whoisweb = input("Enter website to be searched: ")
-                whoisweb = normalize(whoisweb)
-                info = whois.whois(whoisweb)
-                print(info)
-            except whois.parser.PywhoisError:
-                print("Invalid website or server not reachable.")
-
+       
         elif user == "reset":
             websiteagain = input("Enter new website: ")
             websiteagain = normalize(websiteagain)
@@ -694,7 +689,6 @@ while True:
             get - send a request of type get; you can choose between adding cookies or not
             post - send a request of type post; you can choose between adding cookies or not
             reset - define a new website
-            whois - fetch whois information
             poke - make an incomplete request that recons info
             timeout-config - customize your timeout time in seconds
             tor-enable - Enable tor traffic routing
