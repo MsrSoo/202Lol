@@ -2,689 +2,560 @@ import base64
 import gc
 import logging
 import os
+import random
 import socket
 import subprocess
 import time
-import random
+from typing import Dict, Optional, Union
 
-import requests as rqs
+import requests
 from halo import Halo
 from rich.console import Console
-from tqdm import tqdm
-from stem.control import Controller
 from stem.connection import IncorrectPassword
+from stem.control import Controller
+from tqdm import tqdm
 
 
-def clear():
-    try:
-        if os.name == "nt":
-            subprocess.run(["cls"], shell=False)
-        else:
-            subprocess.run(["clear"], shell=False)
+class WebRequestHandler:
+    def __init__(self):
+        self.console = Console()
+        self.website = ""
+        self.timeout = 15
+        self.torenabled = False
+        
+        # Configure proxies
+        self.torproxies = {
+            "http": "socks5h://127.0.0.1:9050",
+            "https": "socks5h://127.0.0.1:9050",
+        }
+        self.hproxies = {
+            "http": "http://65.1.244.232:1080",
+            "https": "http://65.1.244.232:1080",
+        }
+        self.default = self.hproxies
+        
+        # Configure logging
+        logging.basicConfig(
+            filename="main.log",
+            encoding="utf-8",
+            level=logging.DEBUG,
+            format="%(levelname)s: %(message)s",
+        )
+        
+        # Initialize spinners
+        self.webspin = Halo(text="Checking website...", spinner="dots")
+        self.payloadspin = Halo(text="Preparing payload...", spinner="dots")
+        self.jarspin = Halo(text="Building Jar...", spinner="dots")
+        self.spinner = Halo(text="", spinner="dots")
+        
+        # Display startup banner
+        self.display_banner()
 
-    except subprocess.CalledProcessError as e:
-        print(f"check50 failed: {e}")
-        print(e.stderr)
-    except subprocess.TimeoutExpired:
-        print("Command timed out")
-
-
-clear()
-
-console = Console()
-
-color_palettes = {
-    "blue": ["#4c4cff", "#6666ff", "#8080ff", "#9999ff"],
-    "cyan": ["#66ffff", "#80ffff", "#99ffff", "#b3ffff"],
-}
-
-# List of hacking/programming quotes
-quotes = [
-    "“Talk is cheap. Show me the code.”",
-    "“The best way to predict the future is to implement it.”",
-    "“There is only one way to eat an elephant: a byte at a time.”",
-    "“It’s not a bug – it’s an undocumented feature.”",
-    "“Code is like humor. When you have to explain it, it’s bad.”",
-    "“Programs must be written for people to read, and only incidentally for machines to execute.”",
-]
-
-# Select a random color palette and quote
-selected_color = random.choice(list(color_palettes.keys()))
-shades = color_palettes[selected_color]
-quote = random.choice(quotes)
-
-# Generate styled ASCII text
-ascii_text = f"""
-[{shades[0]}]██████╗  ██████╗ ██████╗ ██╗      ██████╗ ██╗    
-[{shades[1]}]╚════██╗██╔═████╗╚════██╗██║     ██╔═══██╗██║     
- [{shades[2]}]█████╔╝██║██╔██║ █████╔╝██║     ██║   ██║██║    
-[{shades[3]}]██╔═══╝ ████╔╝██║██╔═══╝ ██║     ██║   ██║██║    
-[{shades[0]}]███████╗╚██████╔╝███████╗███████╗╚██████╔╝███████╗    
-[{shades[1]}]╚══════╝ ╚═════╝ ╚══════╝╚══════╝ ╚═════╝ ╚══════╝
-
-[{shades[2]}]Website Request Handler[/]
-            Made by LifelagCheats
-[{shades[3]}]{quote}[/]
-"""
-# Print with random colors
-console.print(ascii_text)
-
-webspin = Halo(text="Checking website...", spinner="dots")
-payloadspin = Halo(text="Preparing payload...", spinner="dots")
-jarspin = Halo(text="Building Jar...", spinner="dots")
-spinner = Halo(text="", spinner="dots")
-
-logging.basicConfig(
-    filename="main.log",
-    encoding="utf-8",
-    level=logging.DEBUG,
-    format="%(levelname)s: %(message)s",
-)
-
-torproxies = {
-    "http": "socks5h://127.0.0.1:9050",
-    "https": "socks5h://127.0.0.1:9050",
-}
-
-hproxies = {
-    "http": "http://65.1.244.232:1080",
-    "https": "http://65.1.244.232:1080",
-}
-
-default = hproxies
-
-torenabled = False
-
-timeout = 10
-
-
-def normalize(website):
-    if not website.startswith(("http://", "https://")):
-        website = "http://" + website
-    return website
-
-
-def poke_website(url):
-    try:
-        response = rqs.get(url, stream=True, timeout=timeout)
-
-        hostname = url.split("//")[-1].split("/")[0]
-        ip_address = socket.gethostbyname(hostname)
-
-        print(f"Website URL: {url}")
-        print(f"Hostname: {hostname}")
-        print(f"IP Address: {ip_address}")
-        print("\nResponse Headers:")
-        for header, value in response.headers.items():
-            print(f"{header}: {value}")
-
-        server_info = response.headers.get("Server", "Not Found")
-        powered_by = response.headers.get("X-Powered-By", "Not Found")
-
-        print("\nServer Info:")
-        print(f"Server: {server_info}")
-        print(f"X-Powered-By: {powered_by}")
-
-        if "Set-Cookie" in response.headers:
-            print("\nCookies Set by the Server:")
-            for cookie in response.cookies:
-                print(f"{cookie.name}: {cookie.value}")
-
-        print("\nConnection details:")
-        print(f"Protocol: {response.raw.version}")
-
-        response.close()
-    except rqs.exceptions.RequestException as e:
-        console.print("[bold red] Error during request, please  consult log file.")
-        logging.error({e})
-    except socket.gaierror as e:
-        console.print("[bold red]Error in DNS resolution, please consult log file.")
-        logging.error({e})
-
-
-def tor_enable():
-    password = input("Tor password: ")
-    with Controller.from_port(port=9051) as controller:
-        controller.authenticate(password=password)  # Replace with your Tor password
-        controller.signal("NEWNYM")  # Request a new identity
-
-    try:
-        toresponse = rqs.get("http://check.torproject.org", proxies=default, timeout=10)
-        if "Congratulations. This browser is configured to use Tor" in toresponse.text:
-            console.print("[green] Traffic is routed through Tor!")
-        else:
-            console.print("[red] Traffic is NOT routed through Tor.")
-    except IncorrectPassword as e:
-        console.print("[bold red] Incorrect password.")
-        logging.error({e})
-    except Exception as e:
-        console.print("[bold red] Got an unexpected error, please check log file.")
-        logging.error({e})
-
-
-def tor_disable():
-    try:
-        password = input("Tor password: ")
-        with Controller.from_port(port=9051) as controller:
-            try:
-                controller.authenticate(password=password)
-                controller.signal("SHUTDOWN")
-                console.print("[green] Disabled tor traffic routing")
-            except IncorrectPassword as e:
-                console.print("[bold red] Incorrect password.")
-                logging.error({e})
-    except Exception as e:
-        console.print("[bold red] Got unexpected error, please check log file")
-        logging.error({e})
-
-
-try:
-    website = input("Website url: ").lower()
-    website = normalize(website)
-    timeout = 15
-    r = rqs.get(website, timeout=timeout, proxies=default)
-    webspin.start()
-    time.sleep(4)
-    response = r.status_code
-    if response == 200:
-        spinner.succeed("Website is valid, Proceeding")
-        webspin.stop()
-    else:
-        spinner.fail("Error: Website could not be reached. Please enter a valid url")
-        logging.debug(response)
-        webspin.stop()
-except KeyboardInterrupt:
-    print("\nTerminated by user.")
-except rqs.exceptions.ConnectionError as e:
-    console.print(
-        "[bold red] A connection error ocurred or server not reachable, please see log file"
-    )
-    logging.error({e})
-except rqs.exceptions.Timeout:
-    print("The request timed out.")
-except rqs.exceptions.RequestException as e:
-    console.print("[bold red] Exception error ocurred, please see log file.")
-    logging.error({e})
-
-while True:
-    try:
-        choices = [
-            "post",
-            "get",
-            "file",
-            "exit",
-            "help",
-            "reset",
-            "proxies-socks",
-            "proxies-http",
-            "config-proxies",
-            "poke",
-            "timeout-config",
-            "tor-enable",
-            "tor-disable",
+    def display_banner(self):
+        """Display the ASCII art banner with a random color and quote."""
+        self.clear_screen()
+        
+        color_palettes = {
+            "blue": ["#4c4cff", "#6666ff", "#8080ff", "#9999ff"],
+            "cyan": ["#66ffff", "#80ffff", "#99ffff", "#b3ffff"],
+        }
+        
+        quotes = [
+            "Talk is cheap. Show me the code.",
+            "The best way to predict the future is to implement it.",
+            "There is only one way to eat an elephant: a byte at a time.",
+            "It's not a bug – it's an undocumented feature.",
+            "Code is like humor. When you have to explain it, its bad.",
+            "Programs must be written for people to read, and only incidentally for machines to execute.",
         ]
-        user = input("\n>> ").lower()
-        if user not in choices:
-            console.print("[red] Invalid command, please enter a valid one.")
+        
+        selected_color = random.choice(list(color_palettes.keys()))
+        shades = color_palettes[selected_color]
+        quote = random.choice(quotes)
+        
+        ascii_text = f"""
+ [{shades[0]}]██████╗  ██████╗ ██████╗ ██╗      ██████╗ ██╗
+ [{shades[1]}]╚════██╗██╔═████╗╚════██╗██║     ██╔═══██╗██║      
+  [{shades[2]}]█████╔╝██║██╔██║ █████╔╝██║     ██║   ██║██║    
+ [{shades[3]}]██╔═══╝ ████╔╝██║██╔═══╝ ██║     ██║   ██║██║    
+ [{shades[0]}]███████╗╚██████╔╝███████╗███████╗╚██████╔╝███████╗    
+ [{shades[1]}]╚══════╝ ╚═════╝ ╚══════╝╚══════╝ ╚═════╝ ╚══════╝
+ 
+ [{shades[2]}]Website Request Handler[/]             Made by LifelagCheats
+ [{shades[3]}]{quote}[/]
+        """
+        self.console.print(ascii_text)
 
-        if user == "get":
-            keyget = input("Name of the payload: ")
-            variableget = input("Value of the payload: ")
-            payloadspin.start()
-            payloadget = {keyget: variableget}
-            time.sleep(5)
-            payloadspin.stop()
-            bisquit = input("Do you want to add cookies? (y/n) ").lower()
-
-            if bisquit == "y":
-                jarred = input("Do you want to use a jar? (y/n) ").lower()
-
-                if jarred == "y":
-                    jarget = rqs.cookies.RequestsCookieJar()
-                    jarget_name = input("Enter the name of the cookie: ")
-                    jarget_value = input("Enter the value of the cookie: ")
-                    jarget_path = input(
-                        "Enter the path of the website where the cookies will be: "
-                    )
-                    jarspin.start()
-                    jarget.set(
-                        jarget_name, jarget_value, domain=website, path=jarget_path
-                    )
-                    time.sleep(4)
-                    jarspin.stop()
-                    jargeturl = input("Enter the url: ")
-                    cookienumber = int(input("Number of cookie requests to do: "))
-                    console.print(f"[bold cyan] Sending requests...")
-                    gc.disable()
-                    for i in tqdm(range(int(cookienumber))):
-                        jarequest = rqs.get(
-                            jargeturl, cookies=jarget, timeout=timeout, proxies=default
-                        )
-                    gc.collect()
-                    gc.enable()
-                    printresult_jar = input(
-                        "Do you want to print the response and cookies? (y/n) "
-                    ).lower()
-                    if printresult_jar == "y":
-                        print(jarequest.text)
-                    elif printresult_jar == "n":
-                        pass
-                    else:
-                        print("Invalid Option")
-
-                elif jarred == "n":
-                    numberget = int(input("Number of requests to do: "))
-                    cookieget = input(
-                        "Enter the name of the cookies you want to get after this: "
-                    )
-                    gc.disable()
-                    console.print(f"[bold cyan] Sending requests...")
-                    for i in tqdm(range(int(numberget))):
-                        rget = rqs.get(
-                            website, params=payloadget, timeout=timeout, proxies=default
-                        )
-                    gc.collect()
-                    gc.enable()
-                    printresult_nojar = input(
-                        "Do you want to print the response and cookies? (y/n) "
-                    ).lower()
-                    if printresult_nojar == "y":
-                        print(rget.text)
-                        if cookieget in rget.cookies:
-                            print(rget.cookies[cookieget])
-                        else:
-                            print("Cookie not found")
-                    elif printresult_nojar == "n":
-                        pass
-                    else:
-                        print("Invalid option")
-
-            elif bisquit == "n":
-                numberget = int(input("Number of requests to do: "))
-                gc.disable()
-                console.print(f"[bold cyan] Sending requests...")
-                for i in tqdm(range(int(numberget))):
-                    rget = rqs.get(
-                        website, params=payloadget, timeout=timeout, proxies=default
-                    )
-                gc.collect()
-                gc.enable()
-                printresult_nocookies = input(
-                    "Do you want to print the response and cookies? (y/n) "
-                ).lower()
-                if printresult_nocookies == "y":
-                    print(rget.text)
-                elif printresult_nocookies == "n":
-                    pass
-                else:
-                    print("Invalid option")
+    def clear_screen(self):
+        """Clear the terminal screen."""
+        try:
+            if os.name == "nt":
+                subprocess.run(["cls"], shell=False)
             else:
-                console.print("[italic red] Invalid option")
+                subprocess.run(["clear"], shell=False)
+        except subprocess.CalledProcessError as e:
+            print(f"Clear screen failed: {e}")
+            print(e.stderr)
+        except subprocess.TimeoutExpired:
+            print("Command timed out")
 
-        elif user == "post":
-            keypost = input("Name of the payload: ")
-            variablepost = input("Value of the payload: ")
-            time.sleep(2)
-            payloadspin.start()
-            time.sleep(4)
-            payloadpost = {keypost: variablepost}
-            payloadspin.stop()
-            galleta = input("Do you want to add cookies? (y/n) ").lower()
+    def normalize_url(self, url: str) -> str:
+        """Add http:// prefix if missing"""
+        if not url.startswith(("http://", "https://")):
+            url = "http://" + url
+        return url
 
-            if galleta == "y":
-                jarredo = input("Do you want to use a jar? (y/n) ").lower()
-                if jarredo == "y":
-                    jarpost = rqs.cookies.RequestsCookieJar()
-                    jarpost_name = input("Enter the name of the cookie: ")
-                    jarpost_value = input("Enter the value of the cookie: ")
-                    jarpost_path = input(
-                        "Enter the path of the website where the cookies will be: "
-                    )
-                    console.print("[yellow] Preparing the post Jar...")
-                    jarspin.start()
-                    time.sleep(4)
-                    jarpost.set(
-                        jarpost_name, jarpost_value, domain=website, path=jarpost_path
-                    )
-                    jarspin.stop()
-                    jarposturl = input("Enter the url: ")
-                    galletanumber = int(input("Number of cookie requests to do: "))
-                    console.print(f"[bold cyan] Sending requests...")
-                    gc.disable()
-                    for i in tqdm(range(int(galletanumber))):
-                        jarequestpost = rqs.post(
-                            jarposturl, cookies=jarpost, timeout=timeout
-                        )
-                    gc.collect()
-                    gc.enable()
-                    printresult_jarredo = input(
-                        "Do you want to print the response and cookies? (y/n) "
-                    ).lower()
-                    if printresult_jarredo == "y":
-                        print(jarequestpost.text)
-                    elif printresult_jarredo == "n":
-                        pass
-                    else:
-                        console.print("[red] Invalid Option")
-
-                elif jarredo == "n":
-                    numberpost = int(input("Number of requests to do: "))
-                    cookiepost = input(
-                        "Enter the name of the cookies you want to get after this: "
-                    )
-                    time.sleep(1)
-                    console.print(f"[bold cyan] Sending requests...")
-                    gc.disable()
-                    for i in tqdm(range(int(numberpost))):
-                        rpost = rqs.post(
-                            website,
-                            params=payloadpost,
-                            timeout=timeout,
-                            proxies=default,
-                        )
-                    gc.collect()
-                    gc.enable()
-                    printresult_nojarredo = input(
-                        "Do you want to print the response and cookies? (y/n) "
-                    ).lower()
-                    if printresult_nojarredo == "y":
-                        print(rpost.text)
-                        if cookiepost in rpost.cookies:
-                            print(rpost.cookies[cookiepost])
-                        else:
-                            print("Cookie not found")
-                    elif printresult_nojarredo == "n":
-                        pass
-                    else:
-                        console.print("[red] Invalid Option")
-
-            elif galleta == "n":
-                numberpost = int(input("Number of requests to do: "))
-                console.print(f"[bold cyan] Sending requests...")
-                gc.disable()
-                for i in tqdm(range(int(numberpost))):
-                    rpost = rqs.post(
-                        website, params=payloadpost, timeout=timeout, proxies=default
-                    )
-                gc.collect()
-                gc.enable()
-                printresult_nogalleta = input(
-                    "Do you want to print the response and cookies? (y/n) "
-                ).lower()
-                if printresult_nogalleta == "y":
-                    print(rpost.text)
-                elif printresult_nogalleta == "n":
-                    pass
-                else:
-                    console.print("[red] Invalid Option")
-            else:
-                console.print("[red] Invalid option")
-
-        elif user == "file":
-            typefile = input("Do you want to open a file or create a string? ")
-            filechoices = ["open", "create"]
-            requestchoice = ["post", "get"]
-            if typefile not in filechoices:
-                console.print("[red] Invalid choice")
-            elif typefile == "open":
-                openname = input("Name of the file with extension to open: ")
-                filename = input("Enter a simple file name: ")
-
-                spinner.start("Preparing the payload's content...")
-                filecontent = {filename: open(openname, "rb")}
-                time.sleep(2)
-                spinner.stop()
-                rqstype = input("Type of request: ")
-                if rqstype not in requestchoice:
-                    console.print("[red] Invalid choice")
-                elif rqstype == "post":
-                    spinner.start("Preparing payload...")
-                    rfilepost = rqs.post(
-                        website, files=filecontent, timeout=timeout, proxies=default
-                    )
-                    time.sleep(1.2)
-                    spinner.stop()
-                    afileresult = input(
-                        "Do you want to print the response and cookies? (y/n)"
-                    ).lower()
-                    if afileresult == "y":
-                        print(rfilepost.text)
-                    elif afileresult == "n":
-                        pass
-                    else:
-                        console.print("[red] Invalid Option")
-                elif rqstype == "get":
-                    spinner.start("Preparing payload...")
-                    rfileget = rqs.get(
-                        website, files=filecontent, timeout=timeout, proxies=default
-                    )
-                    time.sleep(1.2)
-                    spinner.stop()
-                    bfileresult = input(
-                        "Do you want to print the response and cookies? (y/n)"
-                    ).lower()
-                    if bfileresult == "y":
-                        print(rfileget.text)
-                    elif bfileresult == "n":
-                        pass
-                    else:
-                        console.print("[red] Invalid Option")
-
-            elif typefile == "create":
-                method = input(
-                    "Do you want an auto generated file (a) or a custom string (b)? "
-                )
-                if method == "a":
-                    num_lines = int(
-                        input("Enter the number of lines of gibberish you want: ")
-                    )
-                    autofilename = input(
-                        "Enter the name of the output text file (with .txt extension): "
-                    )
-                    headername = input(
-                        "Enter a simple name for the payload header name: "
-                    )
-                    numreq = int(
-                        input("Enter the number of times you want to do the request: ")
-                    )
-
-                    gibberish_lines = []
-                    console.print("[blue] Preparing payload...")
-                    for _ in tqdm(range(int(num_lines)), desc="Generating Lines...  "):
-                        random_bytes = os.urandom(32)
-                        base64_line = base64.b64encode(random_bytes).decode("utf-8")
-                        gibberish_lines.append(base64_line)
-
-                    time.sleep(2)
-                    with open(autofilename, "w", encoding="utf-8") as f:
-                        for line in tqdm(gibberish_lines, desc="Writing Lines...  "):
-                            f.write(line + "\n")
-
-                    time.sleep(1)
-                    console.print(
-                        f"[bold green] File generated and saved to {autofilename}"
-                    )
-
-                    autowritetype = input("Type of requests: ")
-                    if autowritetype not in requestchoice:
-                        console.print("[red] Invalid choice")
-                    elif autowritetype == "post":
-                        autofilecontent = {headername: open(autofilename, "rb")}
-                        console.print(f"[italic blue] Sending payload...")
-                        time.sleep(1)
-                        for i in tqdm(range(int(numreq))):
-                            autowritepost = rqs.post(
-                                website,
-                                files=autofilecontent,
-                                timeout=timeout,
-                                proxies=default,
-                            )
-                        time.sleep(0.5)
-                        ffileresult = input(
-                            "Do you want to print the response and cookies? (y/n) "
-                        ).lower()
-                        if ffileresult == "y":
-                            print(autowritepost)
-                        elif ffileresult == "n":
-                            pass
-                        else:
-                            console.print("[red] Invalid Option")
-                    elif autowritetype == "get":
-                        console.print(f"[bold cyan] Sending payload...")
-                        for i in tqdm(range(int(numreq))):
-                            autowriteget = rqs.get(
-                                website,
-                                files=autofilecontent,
-                                timeout=timeout,
-                                proxies=default,
-                            )
-                        ffileresult = input(
-                            "Do you want to print the response and cookies? (y/n) "
-                        ).lower()
-                        if ffileresult == "y":
-                            print(autowriteget)
-                        elif ffileresult == "n":
-                            pass
-                        else:
-                            console.print("[red] Invalid Option")
-
-                elif method == "b":
-                    writename = input("File name with extension: ")
-                    writestring = input("String for file: ")
-                    writefilename = input("Enter a simple file name: ")
-                    spinner.start("Preparing the file contents...")
-                    time.sleep(2.4)
-                    spinner.stop()
-                    writecontent = {writefilename: (writename, writestring)}
-                    writetype = input("Type of requests: ")
-                    if writetype not in requestchoice:
-                        console.print("[red] Invalid choice")
-                    elif writetype == "post":
-                        writepost = rqs.post(
-                            website,
-                            files=writecontent,
-                            timeout=timeout,
-                            proxies=default,
-                        )
-                        cfileresult = input(
-                            "Do you want to print the response and cookies? (y/n)"
-                        ).lower()
-                        if cfileresult == "y":
-                            print(writepost)
-                        elif cfileresult == "n":
-                            pass
-                        else:
-                            console.print("[red]Invalid Option")
-                    elif writetype == "get":
-                        writeget = rqs.get(
-                            website,
-                            files=writecontent,
-                            timeout=timeout,
-                            proxies=default,
-                        )
-                        dfileresult = input(
-                            "Do you want to print the response and cookies? (y/n)"
-                        ).lower()
-                        if dfileresult == "y":
-                            print(writeget)
-                        elif dfileresult == "n":
-                            pass
-                        else:
-                            console.print("[red] Invalid Option")
-                else:
-                    console.print("[red] Invalid option")
-       
-        elif user == "reset":
-            websiteagain = input("Enter new website: ")
-            websiteagain = normalize(websiteagain)
-            rg = rqs.get(websiteagain, timeout=timeout, proxies=default)
-            webspin.start()
-            time.sleep(4)
-            response = rg.status_code
-            if response == 200:
-                spinner.succeed("Website is valid, Proceeding")
-                website = websiteagain
-                webspin.stop()
-            else:
-                spinner.fail(
-                    "Error: Website could not be reached. Please enter a valid url"
-                )
-                webspin.stop()
-
-        elif user == "poke":
-            poke_website(website)
-
-        elif user == "proxies-socks":
-            newsocks1 = input("Enter the new http socks proxy: ")
-            newsocks2 = input("Enter the new https socks proxy: ")
-
-            if newsocks1:
-                torproxies["http"] = newsocks1
-            elif newsocks2:
-                torproxies["https"] = newsocks2
-
-        elif user == "proxies-http":
-            newhttp = input("Enter the http proxy: ")
-            newhttps = input("Enter the https proxy: ")
-
-            if newhttp:
-                hproxies["http"] = newhttp
-            elif newhttps:
-                hproxies["https"] = newhttps
-
-        elif user == "tor-enable":
-            try:
-                if torenabled == True:
-                    console.print("[yellow] Tor traffic routing is already enabled!")
-                else:
-                    tor_enable()
-                    torenabled = True
-            except Exception as e:
-                console.print(
-                    "[bold red] Got an unexpected error, please check log file."
-                )
-                logging.error({e})
-        elif user == "tor-disable":
-            try:
-                if torenabled == False:
-                    console.print("[yellow] Tor traffic routing is already disabled!")
-                else:
-                    tor_disable()
-                    torenabled = False
-            except Exception as e:
-                console.print(
-                    "[bold red] Got an unexpected error, please check log file."
-                )
-                logging.error({e})
-        elif user == "config-proxies":
-            try:
-                if default == hproxies:
-                    default = torproxies
-                    console.print(
-                        "[green] configured the proxy to use tor socks successfully"
-                    )
-                else:
-                    default = torproxies
-                    console.print(
-                        "[green] configured the proxy to use http proxies successfully"
-                    )
-            except Exception as e:
-                console.print(
-                    "[bold red] Got an unexpected error, please check log file."
-                )
-                logging.error({e})
-
-        elif user == "timeout-config":
-            newtime = int(input("Enter new timeout: "))
-            timeout = newtime
-
-        elif user == "help":
-            console.print(
-                """[bold green]
+    def poke_website(self, url: str):
+        """Gather information about the website without making a full request."""
+        try:
+            response = requests.get(url, stream=True, timeout=self.timeout, proxies=self.default)
             
+            hostname = url.split("//")[-1].split("/")[0]
+            ip_address = socket.gethostbyname(hostname)
+            
+            print(f"Website URL: {url}")
+            print(f"Hostname: {hostname}")
+            print(f"IP Address: {ip_address}")
+            print("\nResponse Headers:")
+            for header, value in response.headers.items():
+                print(f"{header}: {value}")
+            
+            server_info = response.headers.get("Server", "Not Found")
+            powered_by = response.headers.get("X-Powered-By", "Not Found")
+            
+            print("\nServer Info:")
+            print(f"Server: {server_info}")
+            print(f"X-Powered-By: {powered_by}")
+            
+            if "Set-Cookie" in response.headers:
+                print("\nCookies Set by the Server:")
+                for cookie in response.cookies:
+                    print(f"{cookie.name}: {cookie.value}")
+            
+            print("\nConnection details:")
+            print(f"Protocol: {response.raw.version}")
+            
+            response.close()
+        except requests.exceptions.RequestException as e:
+            self.console.print("[bold red] Error during request, please consult log file.")
+            logging.error(str(e))
+        except socket.gaierror as e:
+            self.console.print("[bold red]Error in DNS resolution, please consult log file.")
+            logging.error(str(e))
+
+    def tor_enable(self):
+        """Enable Tor routing for requests."""
+        try:
+            password = input("Tor password: ")
+            with Controller.from_port(port=9051) as controller:
+                controller.authenticate(password=password)
+                controller.signal("NEWNYM")  # Request a new identity
+            
+            tor_response = requests.get("http://check.torproject.org", proxies=self.default, timeout=10)
+            if "Congratulations. This browser is configured to use Tor" in tor_response.text:
+                self.console.print("[green] Traffic is routed through Tor!")
+                self.torenabled = True
+            else:
+                self.console.print("[red] Traffic is NOT routed through Tor.")
+        except IncorrectPassword:
+            self.console.print("[bold red] Incorrect password.")
+        except Exception as e:
+            self.console.print("[bold red] Got an unexpected error, please check log file.")
+            logging.error(str(e))
+
+    def tor_disable(self):
+        """Disable Tor routing for requests."""
+        try:
+            password = input("Tor password: ")
+            with Controller.from_port(port=9051) as controller:
+                try:
+                    controller.authenticate(password=password)
+                    controller.signal("SHUTDOWN")
+                    self.console.print("[green] Disabled tor traffic routing")
+                    self.torenabled = False
+                except IncorrectPassword:
+                    self.console.print("[bold red] Incorrect password.")
+        except Exception as e:
+            self.console.print("[bold red] Got unexpected error, please check log file")
+            logging.error(str(e))
+
+    def check_website(self):
+        """Validate that the website is accessible."""
+        try:
+            url = input("Website url: ").lower()
+            url = self.normalize_url(url)
+            
+            self.webspin.start()
+            r = requests.get(url, timeout=self.timeout, proxies=self.default)
+            time.sleep(1)  # Reduced sleep time
+            
+            response = r.status_code
+            if response == 200:
+                self.spinner.succeed("Website is valid, Proceeding")
+                self.website = url
+            else:
+                self.spinner.fail("Error: Website could not be reached. Please enter a valid url")
+                logging.debug(str(response))
+            
+            self.webspin.stop()
+            return True
+        except KeyboardInterrupt:
+            print("\nTerminated by user.")
+            return False
+        except requests.exceptions.ConnectionError as e:
+            self.console.print(
+                "[bold red] A connection error occurred or server not reachable, please see log file"
+            )
+            logging.error(str(e))
+            return False
+        except requests.exceptions.Timeout:
+            print("The request timed out.")
+            return False
+        except requests.exceptions.RequestException as e:
+            self.console.print("[bold red] Exception error occurred, please see log file.")
+            logging.error(str(e))
+            return False
+
+    def send_get_request(self):
+        """Handle GET requests with various options."""
+        key = input("Name of the payload: ")
+        value = input("Value of the payload: ")
+        
+        self.payloadspin.start()
+        payload = {key: value}
+        time.sleep(1)  # Reduced sleep time
+        self.payloadspin.stop()
+        
+        use_cookies = input("Do you want to add cookies? (y/n) ").lower() == "y"
+        
+        if use_cookies:
+            use_jar = input("Do you want to use a jar? (y/n) ").lower() == "y"
+            
+            if use_jar:
+                jar = requests.cookies.RequestsCookieJar()
+                jar_name = input("Enter the name of the cookie: ")
+                jar_value = input("Enter the value of the cookie: ")
+                jar_path = input("Enter the path of the website where the cookies will be: ")
+                
+                self.jarspin.start()
+                jar.set(jar_name, jar_value, domain=self.website.split("//")[-1].split("/")[0], path=jar_path)
+                time.sleep(1)  # Reduced sleep time
+                self.jarspin.stop()
+                
+                jar_url = input("Enter the url: ")
+                cookie_count = int(input("Number of cookie requests to do: "))
+                
+                self.console.print(f"[bold cyan] Sending requests...")
+                gc.disable()
+                for _ in tqdm(range(cookie_count)):
+                    jar_request = requests.get(
+                        jar_url, cookies=jar, timeout=self.timeout, proxies=self.default
+                    )
+                gc.collect()
+                gc.enable()
+                
+                if input("Do you want to print the response and cookies? (y/n) ").lower() == "y":
+                    print(jar_request.text)
+            else:
+                # Non-jar cookie request
+                req_count = int(input("Number of requests to do: "))
+                cookie_name = input("Enter the name of the cookies you want to get after this: ")
+                
+                gc.disable()
+                self.console.print(f"[bold cyan] Sending requests...")
+                for _ in tqdm(range(req_count)):
+                    r_get = requests.get(
+                        self.website, params=payload, timeout=self.timeout, proxies=self.default
+                    )
+                gc.collect()
+                gc.enable()
+                
+                if input("Do you want to print the response and cookies? (y/n) ").lower() == "y":
+                    print(r_get.text)
+                    if cookie_name in r_get.cookies:
+                        print(r_get.cookies[cookie_name])
+                    else:
+                        print("Cookie not found")
+        else:
+            # Basic GET request without cookies
+            req_count = int(input("Number of requests to do: "))
+            
+            gc.disable()
+            self.console.print(f"[bold cyan] Sending requests...")
+            for _ in tqdm(range(req_count)):
+                r_get = requests.get(
+                    self.website, params=payload, timeout=self.timeout, proxies=self.default
+                )
+            gc.collect()
+            gc.enable()
+            
+            if input("Do you want to print the response and cookies? (y/n) ").lower() == "y":
+                print(r_get.text)
+
+    def send_post_request(self):
+        """Handle POST requests with various options."""
+        key = input("Name of the payload: ")
+        value = input("Value of the payload: ")
+        
+        self.payloadspin.start()
+        payload = {key: value}
+        time.sleep(1)  # Reduced sleep time
+        self.payloadspin.stop()
+        
+        use_cookies = input("Do you want to add cookies? (y/n) ").lower() == "y"
+        
+        if use_cookies:
+            use_jar = input("Do you want to use a jar? (y/n) ").lower() == "y"
+            
+            if use_jar:
+                jar = requests.cookies.RequestsCookieJar()
+                jar_name = input("Enter the name of the cookie: ")
+                jar_value = input("Enter the value of the cookie: ")
+                jar_path = input("Enter the path of the website where the cookies will be: ")
+                
+                self.jarspin.start()
+                jar.set(jar_name, jar_value, domain=self.website.split("//")[-1].split("/")[0], path=jar_path)
+                time.sleep(1)  # Reduced sleep time
+                self.jarspin.stop()
+                
+                jar_url = input("Enter the url: ")
+                cookie_count = int(input("Number of cookie requests to do: "))
+                
+                self.console.print(f"[bold cyan] Sending requests...")
+                gc.disable()
+                for _ in tqdm(range(cookie_count)):
+                    jar_request = requests.post(
+                        jar_url, cookies=jar, timeout=self.timeout, proxies=self.default
+                    )
+                gc.collect()
+                gc.enable()
+                
+                if input("Do you want to print the response and cookies? (y/n) ").lower() == "y":
+                    print(jar_request.text)
+            else:
+                # Non-jar cookie request
+                req_count = int(input("Number of requests to do: "))
+                cookie_name = input("Enter the name of the cookies you want to get after this: ")
+                
+                gc.disable()
+                self.console.print(f"[bold cyan] Sending requests...")
+                for _ in tqdm(range(req_count)):
+                    r_post = requests.post(
+                        self.website, json=payload, timeout=self.timeout, proxies=self.default
+                    )
+                gc.collect()
+                gc.enable()
+                
+                if input("Do you want to print the response and cookies? (y/n) ").lower() == "y":
+                    print(r_post.text)
+                    if cookie_name in r_post.cookies:
+                        print(r_post.cookies[cookie_name])
+                    else:
+                        print("Cookie not found")
+        else:
+            # Basic POST request without cookies
+            req_count = int(input("Number of requests to do: "))
+            
+            gc.disable()
+            self.console.print(f"[bold cyan] Sending requests...")
+            for _ in tqdm(range(req_count)):
+                r_post = requests.post(
+                    self.website, json=payload, timeout=self.timeout, proxies=self.default
+                )
+            gc.collect()
+            gc.enable()
+            
+            if input("Do you want to print the response and cookies? (y/n) ").lower() == "y":
+                print(r_post.text)
+
+    def handle_file_request(self):
+        """Handle requests with file uploads."""
+        file_type = input("Do you want to open a file or create a string? (open/create): ")
+        
+        if file_type not in ["open", "create"]:
+            self.console.print("[red] Invalid choice")
+            return
+            
+        if file_type == "open":
+            file_path = input("Name of the file with extension to open: ")
+            field_name = input("Enter a simple file name: ")
+            
+            self.spinner.start("Preparing the payload's content...")
+            file_content = {field_name: open(file_path, "rb")}
+            time.sleep(1)
+            self.spinner.stop()
+            
+            req_type = input("Type of request (post/get): ")
+            
+            if req_type not in ["post", "get"]:
+                self.console.print("[red] Invalid choice")
+                return
+                
+            self.spinner.start("Preparing payload...")
+            if req_type == "post":
+                response = requests.post(
+                    self.website, files=file_content, timeout=self.timeout, proxies=self.default
+                )
+            else:  # get
+                response = requests.get(
+                    self.website, files=file_content, timeout=self.timeout, proxies=self.default
+                )
+                
+            time.sleep(1)
+            self.spinner.stop()
+            
+            if input("Do you want to print the response and cookies? (y/n)").lower() == "y":
+                print(response.text)
+                
+        elif file_type == "create":
+            method = input("Do you want an auto generated file (a) or a custom string (b)? ")
+            
+            if method == "a":
+                # Auto-generated file
+                num_lines = int(input("Enter the number of lines of gibberish you want: "))
+                output_file = input("Enter the name of the output text file (with .txt extension): ")
+                header_name = input("Enter a simple name for the payload header name: ")
+                req_count = int(input("Enter the number of times you want to do the request: "))
+                
+                gibberish_lines = []
+                self.console.print("[blue] Preparing payload...")
+                
+                for _ in tqdm(range(num_lines), desc="Generating Lines...  "):
+                    random_bytes = os.urandom(32)
+                    base64_line = base64.b64encode(random_bytes).decode("utf-8")
+                    gibberish_lines.append(base64_line)
+                
+                with open(output_file, "w", encoding="utf-8") as f:
+                    for line in tqdm(gibberish_lines, desc="Writing Lines...  "):
+                        f.write(line + "\n")
+                
+                self.console.print(f"[bold green] File generated and saved to {output_file}")
+                
+                req_type = input("Type of requests (post/get): ")
+                
+                if req_type not in ["post", "get"]:
+                    self.console.print("[red] Invalid choice")
+                    return
+                    
+                file_content = {header_name: open(output_file, "rb")}
+                self.console.print(f"[italic blue] Sending payload...")
+                
+                if req_type == "post":
+                    for _ in tqdm(range(req_count)):
+                        response = requests.post(
+                            self.website, files=file_content, timeout=self.timeout, proxies=self.default
+                        )
+                else:  # get
+                    for _ in tqdm(range(req_count)):
+                        response = requests.get(
+                            self.website, files=file_content, timeout=self.timeout, proxies=self.default
+                        )
+                        
+                if input("Do you want to print the response and cookies? (y/n) ").lower() == "y":
+                    print(response.text)
+                    
+            elif method == "b":
+                # Custom string file
+                file_name = input("File name with extension: ")
+                file_string = input("String for file: ")
+                field_name = input("Enter a simple file name: ")
+                
+                self.spinner.start("Preparing the file contents...")
+                time.sleep(1)
+                self.spinner.stop()
+                
+                file_content = {field_name: (file_name, file_string)}
+                req_type = input("Type of requests (post/get): ")
+                
+                if req_type not in ["post", "get"]:
+                    self.console.print("[red] Invalid choice")
+                    return
+                    
+                if req_type == "post":
+                    response = requests.post(
+                        self.website, files=file_content, timeout=self.timeout, proxies=self.default
+                    )
+                else:  # get
+                    response = requests.get(
+                        self.website, files=file_content, timeout=self.timeout, proxies=self.default
+                    )
+                    
+                if input("Do you want to print the response and cookies? (y/n)").lower() == "y":
+                    print(response.text)
+            else:
+                self.console.print("[red] Invalid option")
+
+    def reset_website(self):
+        """Change the target website."""
+        new_website = input("Enter new website: ")
+        new_website = self.normalize_url(new_website)
+        
+        self.webspin.start()
+        try:
+            response = requests.get(new_website, timeout=self.timeout, proxies=self.default)
+            time.sleep(1)
+            
+            if response.status_code == 200:
+                self.spinner.succeed("Website is valid, Proceeding")
+                self.website = new_website
+            else:
+                self.spinner.fail("Error: Website could not be reached. Please enter a valid url")
+        except requests.exceptions.RequestException:
+            self.spinner.fail("Error: Website could not be reached. Please enter a valid url")
+            
+        self.webspin.stop()
+
+    def update_socks_proxies(self):
+        """Update SOCKS proxy settings."""
+        http_proxy = input("Enter the new http socks proxy: ")
+        https_proxy = input("Enter the new https socks proxy: ")
+        
+        if http_proxy:
+            self.torproxies["http"] = http_proxy
+            
+        if https_proxy:
+            self.torproxies["https"] = https_proxy
+            
+        self.console.print("[green] SOCKS proxies updated successfully")
+
+    def update_http_proxies(self):
+        """Update HTTP proxy settings."""
+        http_proxy = input("Enter the http proxy: ")
+        https_proxy = input("Enter the https proxy: ")
+        
+        if http_proxy:
+            self.hproxies["http"] = http_proxy
+            
+        if https_proxy:
+            self.hproxies["https"] = https_proxy
+            
+        self.console.print("[green] HTTP proxies updated successfully")
+
+    def configure_proxies(self):
+        """Toggle between HTTP and SOCKS proxy configurations."""
+        try:
+            if self.default == self.hproxies:
+                self.default = self.torproxies
+                self.console.print("[green] Configured the proxy to use tor socks successfully")
+            else:
+                self.default = self.hproxies
+                self.console.print("[green] Configured the proxy to use http proxies successfully")
+        except Exception as e:
+            self.console.print("[bold red] Got an unexpected error, please check log file.")
+            logging.error(str(e))
+
+    def update_timeout(self):
+        """Change the timeout value for requests."""
+        new_timeout = int(input("Enter new timeout (seconds): "))
+        self.timeout = new_timeout
+        self.console.print(f"[green] Timeout updated to {new_timeout} seconds")
+
+    def show_help(self):
+        """Display help information."""
+        self.console.print(
+            """[bold green]
             ======= Help Manual =======
-
-
+   
             file - send a file as a request
             get - send a request of type get; you can choose between adding cookies or not
             post - send a request of type post; you can choose between adding cookies or not
@@ -700,25 +571,60 @@ while True:
             help - show this message
 
             ===========================
-            
             """
-            )
-
-        elif user == "exit":
-            console.print("[bold yellow] Exiting...")
-            break
-
-    except KeyboardInterrupt:
-        console.print("[bold yellow] Script terminated by user")
-        break
-
-    except rqs.exceptions.ConnectionError as e:
-        console.print(
-            "[bold red] A connection error ocurred or server not reachable, please see log file."
         )
-        logging.error({e})
-    except rqs.exceptions.Timeout:
-        print("The request timed out.")
-    except rqs.exceptions.RequestException as e:
-        console.print("[bold red] Exception error ocurred, please see log file.")
-        logging.error({e})
+
+    def run(self):
+        """Main program loop."""
+        if not self.check_website():
+            return
+            
+        while True:
+            try:
+                commands = {
+                    "post": self.send_post_request,
+                    "get": self.send_get_request,
+                    "file": self.handle_file_request,
+                    "reset": self.reset_website,
+                    "poke": lambda: self.poke_website(self.website),
+                    "proxies-socks": self.update_socks_proxies,
+                    "proxies-http": self.update_http_proxies,
+                    "config-proxies": self.configure_proxies,
+                    "timeout-config": self.update_timeout,
+                    "tor-enable": self.tor_enable,
+                    "tor-disable": self.tor_disable,
+                    "help": self.show_help,
+                    "exit": lambda: "exit"
+                }
+                
+                user_input = input("\n>> ").lower()
+                
+                if user_input in commands:
+                    result = commands[user_input]()
+                    if result == "exit":
+                        self.console.print("[bold yellow] Exiting...")
+                        break
+                else:
+                    self.console.print("[red] Invalid command, please enter a valid one.")
+                    
+            except KeyboardInterrupt:
+                self.console.print("[bold yellow] Script terminated by user")
+                break
+            except requests.exceptions.ConnectionError as e:
+                self.console.print(
+                    "[bold red] A connection error occurred or server not reachable, please see log file."
+                )
+                logging.error(str(e))
+            except requests.exceptions.Timeout:
+                print("The request timed out.")
+            except requests.exceptions.RequestException as e:
+                self.console.print("[bold red] Exception error occurred, please see log file.")
+                logging.error(str(e))
+            except Exception as e:
+                self.console.print("[bold red] Unexpected error occurred, please see log file.")
+                logging.error(str(e))
+
+
+if __name__ == "__main__":
+    handler = WebRequestHandler()
+    handler.run()
