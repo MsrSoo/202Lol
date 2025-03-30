@@ -2,7 +2,7 @@
 
 <img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/202Lol.png" alt="Logo">
 
-![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)
+![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)
 ![Maintained](https://img.shields.io/badge/maintained-Yes-green)
 ![GitHub contributors](https://img.shields.io/github/contributors/LifelagCheats/202Lol)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/LifelagCheats/202Lol)
