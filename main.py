@@ -126,12 +126,7 @@ class WebRequestHandler:
             print("\nServer Info:")
             print(f"Server: {server_info}")
             print(f"X-Powered-By: {powered_by}")
-            
-            if "Set-Cookie" in response.headers:
-                print("\nCookies Set by the Server:")
-                for cookie in response.cookies:
-                    print(f"{cookie.name}: {cookie.value}")
-            
+                        
             print("\nConnection details:")
             print(f"Protocol: {response.raw.version}")
             
