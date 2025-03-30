@@ -90,9 +90,9 @@ class WebRequestHandler:
         """Clear the terminal screen."""
         try:
             if os.name == "nt":
-                subprocess.run(["cls"], shell=False)
+                subprocess.run(["cls"], shell=True)
             else:
-                subprocess.run(["clear"], shell=False)
+                subprocess.run(["clear"], shell=True)
         except subprocess.CalledProcessError as e:
             print(f"Clear screen failed: {e}")
             print(e.stderr)
