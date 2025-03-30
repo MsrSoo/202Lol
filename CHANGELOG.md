@@ -4,6 +4,16 @@ CHANGELOG
 
 All system changes are documented below
 
+## Version 2.2.0
+
+### Added:
+- `test_minor.py` for testing minor functions, you can always add other minor functions to that file, but for now, it only tests the `reset` and `normalize` functions
+- `test_checker.py` for testing the website checker
+
+### Changed:
+- Added both new files to the Makefile `test` command
+- Updated `SECURITY.md` file, so yeah, things below version `2.0.0` are not supported
+
 ## Version 2.0.0
 
 ### Changed:
