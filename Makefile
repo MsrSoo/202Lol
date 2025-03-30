@@ -21,11 +21,11 @@ security:
 
 test:
 	$(PYTHON) -m unittest tests/test_minor.py
-	@sleep 4
+	@sleep 1.5
 	$(PYTHON) -m unittest tests/test_poke.py
-	@sleep 4
+	@sleep 1.5
 	$(PYTHON) -m unittest tests/test_checker.py
-	@sleep 3
+	@sleep 0.5
 
 clean:
 	rm -rf __pycache__
