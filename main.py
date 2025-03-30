@@ -9,11 +9,11 @@ import time
 from typing import Dict, Optional, Union
 
 import requests
-from halo import Halo
+from halo import Halo # ? Halo because it looks cool
 from rich.console import Console
 from stem.connection import IncorrectPassword
 from stem.control import Controller
-from tqdm import tqdm
+from tqdm import tqdm # ? Tqdm for more "precise" info (i just want you to think the loading is going to end soon).
 
 
 class WebRequestHandler:
@@ -23,7 +23,7 @@ class WebRequestHandler:
         self.timeout = 15
         self.torenabled = False
 
-        # Configure proxies
+        # * Initialize variables
         self.torproxies = {
             "http": "socks5h://127.0.0.1:9050",
             "https": "socks5h://127.0.0.1:9050",
@@ -42,13 +42,13 @@ class WebRequestHandler:
             format="%(levelname)s: %(message)s",
         )
 
-        # Initialize spinners
+        # * Initialize spinners
         self.webspin = Halo(text="Checking website...", spinner="dots")
         self.payloadspin = Halo(text="Preparing payload...", spinner="dots")
         self.jarspin = Halo(text="Building Jar...", spinner="dots")
         self.spinner = Halo(text="", spinner="dots")
 
-        # Display startup banner
+        # * Display startup banner
         self.display_banner()
 
     def display_banner(self):
@@ -150,10 +150,10 @@ class WebRequestHandler:
             password = input("Tor password: ")
             with Controller.from_port(port=9051) as controller:
                 controller.authenticate(password=password)
-                controller.signal("NEWNYM")  # Request a new identity
+                controller.signal("NEWNYM")  # * Request a new identity
 
             tor_response = requests.get(
-                "http://check.torproject.org", proxies=self.default, timeout=10
+                "http://check.torproject.org", proxies=self.default, timeout=10 # * Check to see if tor has been applied successfully
             )
             if (
                 "Congratulations. This browser is configured to use Tor"
@@ -195,10 +195,9 @@ class WebRequestHandler:
 
             self.webspin.start()
             r = requests.get(url, timeout=self.timeout, proxies=self.default)
-            time.sleep(1)  # Reduced sleep time
 
             response = r.status_code
-            if response == 200:
+            if response == 200: 
                 self.spinner.succeed("Website is valid, Proceeding")
                 self.website = url
             else:
@@ -236,7 +235,6 @@ class WebRequestHandler:
 
         self.payloadspin.start()
         payload = {key: value}
-        time.sleep(1)  # Reduced sleep time
         self.payloadspin.stop()
 
         use_cookies = input("Do you want to add cookies? (y/n) ").lower() == "y"
@@ -256,10 +254,9 @@ class WebRequestHandler:
                 jar.set(
                     jar_name,
                     jar_value,
-                    domain=self.website.split("//")[-1].split("/")[0],
+                    domain=self.website.split("//")[-1].split("/")[0], # ? funny solution to only get the website's name without the http before it
                     path=jar_path,
                 )
-                time.sleep(1)  # Reduced sleep time
                 self.jarspin.stop()
 
                 jar_url = input("Enter the url: ")
@@ -282,7 +279,7 @@ class WebRequestHandler:
                 ):
                     print(jar_request.text)
             else:
-                # Non-jar cookie request
+                # * Non-jar cookie request
                 req_count = int(input("Number of requests to do: "))
                 cookie_name = input(
                     "Enter the name of the cookies you want to get after this: "
@@ -312,7 +309,7 @@ class WebRequestHandler:
                     else:
                         print("Cookie not found")
         else:
-            # Basic GET request without cookies
+            # * Basic GET request without cookies
             req_count = int(input("Number of requests to do: "))
 
             gc.disable()
@@ -340,7 +337,6 @@ class WebRequestHandler:
 
         self.payloadspin.start()
         payload = {key: value}
-        time.sleep(1)  # Reduced sleep time
         self.payloadspin.stop()
 
         use_cookies = input("Do you want to add cookies? (y/n) ").lower() == "y"
@@ -363,7 +359,6 @@ class WebRequestHandler:
                     domain=self.website.split("//")[-1].split("/")[0],
                     path=jar_path,
                 )
-                time.sleep(1)  # Reduced sleep time
                 self.jarspin.stop()
 
                 jar_url = input("Enter the url: ")
@@ -386,14 +381,14 @@ class WebRequestHandler:
                 ):
                     print(jar_request.text)
             else:
-                # Non-jar cookie request
+                # * Non-jar cookie request
                 req_count = int(input("Number of requests to do: "))
                 cookie_name = input(
                     "Enter the name of the cookies you want to get after this: "
                 )
 
                 gc.disable()
-                self.console.print(f"[bold cyan] Sending requests...")
+                self.console.print(f"[bold cyan] Sending requests...") # ? I use cyan because it looks cool btw.
                 for _ in tqdm(range(req_count)):
                     r_post = requests.post(
                         self.website,
@@ -411,8 +406,8 @@ class WebRequestHandler:
                     == "y"
                 ):
                     print(r_post.text)
-                    if cookie_name in r_post.cookies:
-                        print(r_post.cookies[cookie_name])
+                    if cookie_name in r_post.cookies: # * make sure the cookies are in the response
+                        print(r_post.cookies[cookie_name]) 
                     else:
                         print("Cookie not found")
         else:
@@ -470,7 +465,7 @@ class WebRequestHandler:
                     timeout=self.timeout,
                     proxies=self.default,
                 )
-            else:  # get
+            else:  # GET
                 response = requests.get(
                     self.website,
                     files=file_content,
@@ -478,7 +473,6 @@ class WebRequestHandler:
                     proxies=self.default,
                 )
 
-            time.sleep(1)
             self.spinner.stop()
 
             if (
@@ -493,7 +487,8 @@ class WebRequestHandler:
             )
 
             if method == "a":
-                # Auto-generated file
+                # ? I decided for an auto generated file of gibberish base64 because it is just a perfect payload. 
+                # ? Don't enter too much or your pc might crash.
                 num_lines = int(
                     input("Enter the number of lines of gibberish you want: ")
                 )
@@ -514,7 +509,7 @@ class WebRequestHandler:
                     gibberish_lines.append(base64_line)
 
                 with open(output_file, "w", encoding="utf-8") as f:
-                    for line in tqdm(gibberish_lines, desc="Writing Lines...  "):
+                    for line in tqdm(gibberish_lines, desc="Writing Lines...  "): # * gotta save it so we can use it according to the requests docs.
                         f.write(line + "\n")
 
                 self.console.print(
@@ -710,7 +705,7 @@ class WebRequestHandler:
                     "get": self.send_get_request,
                     "file": self.handle_file_request,
                     "reset": self.reset_website,
-                    "poke": lambda: self.poke_website(self.website),
+                    "poke": lambda: self.poke_website(self.website), # * because it is a standalone function that needs a direct parameter
                     "proxies-socks": self.update_socks_proxies,
                     "proxies-http": self.update_http_proxies,
                     "config-proxies": self.configure_proxies,
