@@ -34,6 +34,15 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Cache Python dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-
+
+      
       - name: Run Unit Tests
         run: |
           python -m unittest tests/test_minor.py
