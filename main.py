@@ -191,6 +191,7 @@ class WebRequestHandler:
             else:
                 self.spinner.fail("Error: Website could not be reached. Please enter a valid url")
                 logging.debug(str(response))
+                return False
             
             self.webspin.stop()
             return True

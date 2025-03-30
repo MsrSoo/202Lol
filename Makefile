@@ -19,7 +19,9 @@ security:
 	pip-audit
 
 test:
+	$(PYTHON) -m unittest tests/test_minor.py
 	$(PYTHON) -m unittest tests/test_poke.py
+	$(PYTHON) -m unittest tests/test_checker.py
 
 clean:
 	rm -rf __pycache__
@@ -30,5 +32,5 @@ clean:
 	rm -rf *.log
 
 
-precommit: lint security test
+precommit: lint security test clean
 	@echo "All checks passed!"

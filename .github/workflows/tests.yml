@@ -26,4 +26,6 @@ jobs:
 
       - name: Run Unit Tests
         run: |
+          python -m unittest tests/test_minor.py
           python -m unittest tests/test_poke.py
+          python -m unittest tests/test_checker.py
