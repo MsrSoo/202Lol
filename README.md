@@ -92,6 +92,14 @@ sudo systemctl start tor
     <td>Arch Linux</td>
     <td>6.12.8-arch1-1</td>
   </tr>
+  <tr>
+    <td>Ubuntu</td>
+    <td>24.10</td>
+  </tr>
+  <tr>
+    <td>MacOS</td>
+    <td>Sequoia 15</td>
+  </tr>
 </table>
 
 > [!NOTE]
