@@ -2,8 +2,19 @@ name: Unit Test
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
-
+    - cron: '0 */3 * * *'  
+  push:
+    branches:
+      - main   # Only on pushes to the main branch
+    paths:
+      - 'tests/**'      # Trigger when any file under the 'src' directory is changed
+      - 'main.py'     # Trigger when 'main.py' file is changed
+  pull_request:
+    branches:
+      - main   # Trigger on PRs to the main branch
+    paths:
+      - 'tests/**'      # Trigger when any file under the 'src' directory is changed
+      - 'main.py'
 jobs:
   build:
     timeout-minutes: 30
