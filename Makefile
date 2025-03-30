@@ -18,6 +18,9 @@ security:
 	safety scan # you need a safety account for this one, so go create one
 	pip-audit
 
+test:
+	$(PYTHON) -m unittest tests/test_poke.py
+
 clean:
 	rm -rf __pycache__
 	rm -rf .pytest_cache
@@ -27,5 +30,5 @@ clean:
 	rm -rf *.log
 
 
-precommit: lint security 
+precommit: lint security test
 	@echo "All checks passed!"

@@ -4,6 +4,17 @@ CHANGELOG
 
 All system changes are documented below
 
+## Version 2.0.0
+
+### Changed:
+- Refractored `main.py` code for better readibility and maintenance.
+- Updated script version to 2.0.0 since this is a breaking change.
+
+### Added:
+- added unit tests in `tests/test_poke.py` directory.
+- added a unit test workflow.
+- new Makefile command for the unit tests.
+
 ## Version 1.0.3
 
 ### bug fixes:
