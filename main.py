@@ -7,6 +7,7 @@ import random
 import socket
 import subprocess
 import time
+import sys
 from typing import Dict, Optional, Union
 
 import requests
@@ -15,7 +16,7 @@ from rich.console import Console
 from stem.connection import IncorrectPassword
 from stem.control import Controller
 from tqdm import tqdm # ? Tqdm for more "precise" info (i just want you to think the loading is going to end soon).
-
+sys.stdout.reconfigure(encoding='utf-8')
 
 class WebRequestHandler:
     def __init__(self):

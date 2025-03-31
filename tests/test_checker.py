@@ -8,7 +8,9 @@ import requests
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from main import WebRequestHandler
+sys.stdout.reconfigure(encoding='utf-8') # * Set utf encoding for windows.
 
+# ? Tests the website checker inside WebRequestHandler
 
 class TestWebsiteChecker(unittest.TestCase):
 
@@ -32,7 +34,7 @@ class TestWebsiteChecker(unittest.TestCase):
             spinner.succeed('Found no errors')
 
         except Exception as e:
-            spinner.fail(f'Found error while testing: {str(e)}')
+            spinner.fail(f'Found error while testing: {str(e)}') # * clearer error handling
 
     @patch('builtins.input', return_value='https://nonexistentwebsite.com.org.net')
     @patch('requests.get', side_effect=requests.exceptions.ConnectionError)
@@ -46,7 +48,7 @@ class TestWebsiteChecker(unittest.TestCase):
             spinner.succeed('Found no errors')
 
         except Exception as e:
-            spinner.fail(f'Found error while testing: {str(e)}')
+            spinner.fail(f'Found error while testing: {str(e)}') # * clearer error handling
 
 
 if __name__ == '__main__':

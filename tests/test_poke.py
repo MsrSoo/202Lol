@@ -9,7 +9,9 @@ from halo import Halo
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from main import WebRequestHandler
+sys.stdout.reconfigure(encoding='utf-8') # * Set utf encoding for windows.
 
+# ? Tests the poke function inside the main script
 
 class TestPokeWebsite(unittest.TestCase):
 
@@ -70,7 +72,7 @@ class TestPokeWebsite(unittest.TestCase):
             spinner.succeed("Test was a success")
 
         except Exception as e:
-            spinner.fail(f'Error during test: {str(e)}')
+            spinner.fail(f'Error during test: {str(e)}') # * clearer error handling
 
     @patch('requests.get')
     @patch('socket.gethostbyname')
@@ -93,4 +95,4 @@ class TestPokeWebsite(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main() # * run the script

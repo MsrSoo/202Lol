@@ -9,7 +9,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from main import WebRequestHandler
 
 # ? This will tests MINOR functions, that really don't matter
-
+# TODO: add other functions for testing
+sys.stdout.reconfigure(encoding='utf-8') # * Set utf encoding for windows.
 
 class MinorUnitTests(unittest.TestCase):
 
@@ -24,7 +25,7 @@ class MinorUnitTests(unittest.TestCase):
             url = 'google.com'
             result = self.checker.normalize_url(url)
 
-            self.assertEqual(result, 'https://google.com')
+            self.assertEqual(result, 'https://google.com') # ! make sure the function returns the correct result
             spinner.succeed("Function worked as expected")
 
         except Exception as e:
@@ -48,7 +49,7 @@ class MinorUnitTests(unittest.TestCase):
             spinner.succeed("Function worked as expected")
 
         except Exception as e:
-            spinner.fail(f'Got error while testing: {str(e)}')
+            spinner.fail(f'Got error while testing: {str(e)}') # * clearer error handling
 
 
 if __name__ == '__main__':
