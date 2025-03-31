@@ -100,6 +100,14 @@ sudo systemctl start tor
     <td>MacOS</td>
     <td>Sequoia 15</td>
   </tr>
+  <tr>
+    <td>Windows 10</td>
+    <td>22H2</td>
+  </tr>
+  <tr>
+    <td>Windows 11</td>
+    <td>24H2</td>
+  </tr>
 </table>
 
 > [!NOTE]
