@@ -33,7 +33,7 @@ class MinorUnitTests(unittest.TestCase):
 
     @patch(
         'builtins.input', return_value='https://httpbin.org/get'
-    )  # ✅ Mock user input
+    )  # * Mock user input
     @patch('requests.get')
     def test_reseter(self, mock_get, mock_input):
         spinner = Halo(spinner='dots')
@@ -51,6 +51,16 @@ class MinorUnitTests(unittest.TestCase):
         except Exception as e:
             spinner.fail(f'Got error while testing: {str(e)}') # * clearer error handling
 
+    def test_clear(self):
+        spinner = Halo(spinner='dots')
+        spinner.start('Testing clear function')
+
+        try:
+            self.checker.clear()
+            spinner.succeed("Function worked as expected")
+
+        except Exception as e:
+            spinner.fail(f'Got error while testing: {str(e)}') 
 
 if __name__ == '__main__':
     unittest.main()
