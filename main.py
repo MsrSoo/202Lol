@@ -92,9 +92,9 @@ class WebRequestHandler:
         """Clear the terminal screen."""
         try:
             if os.name == "nt":
-                subprocess.run(["cls"], shell=True)
+                subprocess.run([r"C:\Windows\System32\cmd.exe", "/c", "cls"], shell=False)
             else:
-                subprocess.run(["clear"], shell=True)
+                subprocess.run(["/bin/bash", "-c", "clear"], shell=False)
         except subprocess.CalledProcessError as e:
             print(f"Clear screen failed: {e}")
             print(e.stderr)
