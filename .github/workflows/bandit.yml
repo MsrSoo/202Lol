@@ -2,9 +2,6 @@ name: Bandit
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - "tests/**"
-      - "*.py"
   pull_request:
     branches: [ "main" ]
   schedule:
