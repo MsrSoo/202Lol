@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Tests the poke function inside the main script individually.
-@LifelagCheats
+* Tests the poke function inside the main script individually.
+? @LifelagCheats
 """
 import unittest
 from unittest.mock import patch, MagicMock

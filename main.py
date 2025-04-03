@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-202Lol is a script for beginners that lets users easily send GET and POST requests with 
-many of their configurations, without adding any unnecessary complexity
-@LifelagCheats 
+* 202Lol is a script for beginners that lets users easily send GET and POST requests with 
+* many of their configurations, without adding any unnecessary complexity
+? @LifelagCheats 
 """
 import base64
 import gc
@@ -161,8 +161,8 @@ class WebRequestHandler:
                 controller.signal("NEWNYM")  # * Request a new identity
 
             tor_response = requests.get(
-                "http://check.torproject.org", proxies=self.default, timeout=10 # * Check to see if tor has been applied successfully
-            )
+                "http://check.torproject.org", proxies=self.default, timeout=10
+            ) # * Check to see if tor has been applied successfully
             if (
                 "Congratulations. This browser is configured to use Tor"
                 in tor_response.text

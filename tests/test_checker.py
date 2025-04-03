@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Tests the website checker inside the main script individually.
-@LifelagCheats
+* Tests the website checker inside the main script individually.
+? @LifelagCheats
 """
 import unittest
 from unittest.mock import patch, MagicMock

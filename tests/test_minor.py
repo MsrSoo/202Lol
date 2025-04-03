@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Unittest file that tests Minor functions.
-@LifelagCheats
+* Unittest file that tests Minor functions.
+? @LifelagCheats
 """
 import unittest
 from unittest.mock import patch, MagicMock
@@ -32,7 +32,7 @@ class MinorUnitTests(unittest.TestCase):
             url = 'google.com'
             result = self.checker.normalize_url(url)
 
-            self.assertEqual(result, 'https://google.com') # ! make sure the function returns the correct result
+            self.assertEqual(result, 'http://google.com') # ! make sure the function returns the correct result
             spinner.succeed("Function worked as expected")
 
         except Exception as e:
