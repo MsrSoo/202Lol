@@ -10,9 +10,5 @@
   "issueSettings": {
     "minSeverityLevel": "MEDIUM",
     "issueType": "DEPENDENCY"
-  },
-  "reportSettings": {
-    "generateHtmlReport": true,
-    "outputDirectory": "whitesource-reports"
   }
 }
