@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
+"""
+Unittest file that tests Minor functions.
+@LifelagCheats
+"""
+from main import WebRequestHandler
 import unittest
 from unittest.mock import patch, MagicMock
 import sys
 import os
+
+import requests
 from halo import Halo
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from main import WebRequestHandler
 
 # ? This will tests MINOR functions, that really don't matter
 # TODO: add other functions for testing
@@ -19,6 +25,7 @@ class MinorUnitTests(unittest.TestCase):
         self.checker = WebRequestHandler()
 
     def test_normalizer(self):
+        """ Test the website URL normalizer. """
         spinner = Halo(spinner='dots')
         spinner.start('Testing normalizer... ')
         try:
@@ -36,6 +43,7 @@ class MinorUnitTests(unittest.TestCase):
     )  # * Mock user input
     @patch('requests.get')
     def test_reseter(self, mock_get, mock_input):
+        """ Tests the website reseter. """
         spinner = Halo(spinner='dots')
         spinner.start('Testing website reseter... ')
 
@@ -52,6 +60,7 @@ class MinorUnitTests(unittest.TestCase):
             spinner.fail(f'Got error while testing: {str(e)}') # * clearer error handling
 
     def test_clear(self):
+        """ Clear function testing. """
         spinner = Halo(spinner='dots')
         spinner.start('Testing clear function')
 

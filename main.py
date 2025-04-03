@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+Main running script for the project that contains all the functions and classes.
+@LifelagCheats 
+"""
 import base64
 import gc
 import logging
@@ -19,6 +23,7 @@ from tqdm import tqdm # ? Tqdm for more "precise" info (i just want you to think
 sys.stdout.reconfigure(encoding='utf-8')
 
 class WebRequestHandler:
+    """ Main and only class """
     def __init__(self):
         self.console = Console()
         self.website = ""

@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
+"""
+Tests the poke function inside the main script individually.
+@LifelagCheats
+"""
+from main import WebRequestHandler
 import unittest
 from unittest.mock import patch, MagicMock
-import requests
+import socket
 import os
 import sys
-import socket
+
+import requests
 from halo import Halo
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from main import WebRequestHandler
 sys.stdout.reconfigure(encoding='utf-8') # * Set utf encoding for windows.
 
 # ? Tests the poke function inside the main script
@@ -19,7 +24,7 @@ class TestPokeWebsite(unittest.TestCase):
     @patch('socket.gethostbyname')
     @patch('builtins.print')
     def test_poke_success(self, mock_print, mock_gethostbyname, mock_get):
-
+        """ Tests how the poke function reacts to a successful interaction. """
         spinner = Halo(spinner='dots')
         spinner.start('Testing poking function...')
 
@@ -55,7 +60,7 @@ class TestPokeWebsite(unittest.TestCase):
     @patch('socket.gethostbyname')
     @patch('builtins.print')
     def test_poke_failure(self, mock_print, mock_gethostbyname, mock_get):
-
+        """ Tests how the poke function reacts to a failure. """
         spinner = Halo(spinner='dots')
         spinner.start('Testing poking failure results...')
 
@@ -78,7 +83,7 @@ class TestPokeWebsite(unittest.TestCase):
     @patch('socket.gethostbyname')
     @patch('builtins.print')
     def test_poke_website_dns_error(self, mock_print, mock_gethostbyname, mock_get):
-
+        """ Tests how the poke function reacts to a DNS error. """
         spinner = Halo(spinner='dots')
         spinner.start('Testing DNS errors...')
         try:

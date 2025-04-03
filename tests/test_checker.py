@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
+"""
+Tests the website checker inside the main script individually.
+@LifelagCheats
+"""
+from main import WebRequestHandler
 import unittest
 from unittest.mock import patch, MagicMock
 import sys
 import os
+
+
 from halo import Halo
 import requests
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from main import WebRequestHandler
 sys.stdout.reconfigure(encoding='utf-8') # * Set utf encoding for windows.
 
 # ? Tests the website checker inside WebRequestHandler
@@ -21,6 +27,7 @@ class TestWebsiteChecker(unittest.TestCase):
     @patch('builtins.input', return_value='https://httpbin.org/get')
     @patch('requests.get')
     def test_checker_success(self, mock_get, mock_input):
+        """ Tests the website checker for a successful reaction. """
         spinner = Halo(spinner='dots')
         spinner.start('Testing website checker... ')
 
@@ -39,6 +46,7 @@ class TestWebsiteChecker(unittest.TestCase):
     @patch('builtins.input', return_value='https://nonexistentwebsite.com.org.net')
     @patch('requests.get', side_effect=requests.exceptions.ConnectionError)
     def test_checker_failure(self, mock_get, mock_input):
+        """ Tests the website checker for failures. """
         spinner = Halo(spinner='dots')
         spinner.start('Testing website checker...')
 
