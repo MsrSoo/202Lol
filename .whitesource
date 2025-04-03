@@ -13,6 +13,6 @@
   },
   "reportSettings": {
     "generateHtmlReport": true,
-    "outputDirectory": "whitesource-reports"
+    "outputDirectory": "reports/whitesource"
   }
 }
