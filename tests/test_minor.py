@@ -3,11 +3,11 @@
 Unittest file that tests Minor functions.
 @LifelagCheats
 """
-from main import WebRequestHandler
 import unittest
 from unittest.mock import patch, MagicMock
 import sys
 import os
+from main import WebRequestHandler
 
 import requests
 from halo import Halo
@@ -19,7 +19,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 sys.stdout.reconfigure(encoding='utf-8') # * Set utf encoding for windows.
 
 class MinorUnitTests(unittest.TestCase):
-
+    """ Class for the minor tests script. """
     def setUp(self):
         """Set up the WebRequestHandler instance once per test."""
         self.checker = WebRequestHandler()
@@ -65,7 +65,7 @@ class MinorUnitTests(unittest.TestCase):
         spinner.start('Testing clear function')
 
         try:
-            self.checker.clear()
+            self.checker.clear_screen()
             spinner.succeed("Function worked as expected")
 
         except Exception as e:

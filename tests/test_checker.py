@@ -3,11 +3,11 @@
 Tests the website checker inside the main script individually.
 @LifelagCheats
 """
-from main import WebRequestHandler
 import unittest
 from unittest.mock import patch, MagicMock
 import sys
 import os
+from main import WebRequestHandler
 
 
 from halo import Halo
@@ -19,7 +19,7 @@ sys.stdout.reconfigure(encoding='utf-8') # * Set utf encoding for windows.
 # ? Tests the website checker inside WebRequestHandler
 
 class TestWebsiteChecker(unittest.TestCase):
-
+    """ Class for the website checker. """
     def setUp(self):
         """Set up the WebRequestHandler instance once per test."""
         self.checker = WebRequestHandler()

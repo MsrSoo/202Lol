@@ -3,12 +3,12 @@
 Tests the poke function inside the main script individually.
 @LifelagCheats
 """
-from main import WebRequestHandler
 import unittest
 from unittest.mock import patch, MagicMock
 import socket
 import os
 import sys
+from main import WebRequestHandler
 
 import requests
 from halo import Halo
@@ -19,7 +19,7 @@ sys.stdout.reconfigure(encoding='utf-8') # * Set utf encoding for windows.
 # ? Tests the poke function inside the main script
 
 class TestPokeWebsite(unittest.TestCase):
-
+    """ Class for the testing poke function script. """
     @patch('requests.get')
     @patch('socket.gethostbyname')
     @patch('builtins.print')

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Main running script for the project that contains all the functions and classes.
+202Lol is a script for beginners that lets users easily send GET and POST requests with 
+many of their configurations, without adding any unnecessary complexity
 @LifelagCheats 
 """
 import base64
@@ -97,9 +98,9 @@ class WebRequestHandler:
         """Clear the terminal screen."""
         try:
             if os.name == "nt":
-                subprocess.run([r"C:\Windows\System32\cmd.exe", "/c", "cls"], shell=False)
+                subprocess.run([r"C:\Windows\System32\cmd.exe", "/c", "cls"],check=True, shell=False)
             else:
-                subprocess.run(["/bin/bash", "-c", "clear"], shell=False)
+                subprocess.run(["/bin/bash", "-c", "clear"], check=True, shell=False)
         except subprocess.CalledProcessError as e:
             print(f"Clear screen failed: {e}")
             print(e.stderr)
