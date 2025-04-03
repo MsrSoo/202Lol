@@ -4,6 +4,19 @@ CHANGELOG
 
 All system changes are documented below
 
+## Version 2.2.1
+
+### Added:
+- New clear function test in `test_minor.py`.
+- added safety checks and scanning in each push
+- `.safety-project.ini` file for safety scans
+
+### Fixed:
+
+- fixed checks not working in windows
+- "WebRequestHandler has no attribute clear" error fixed (clear_screen was the function, i forgot :])
+
+
 ## Version 2.2.0
 
 ### Added:
@@ -14,7 +27,7 @@ All system changes are documented below
 - Added both new files to the Makefile `test` command
 - Updated `SECURITY.md` file, so yeah, things below version `2.0.0` are not supported
 
-## Version 2.0.0
+# Version 2.0.0
 
 ### Changed:
 - Refractored `main.py` code for better readibility and maintenance.
@@ -24,6 +37,7 @@ All system changes are documented below
 - added unit tests in `tests/test_poke.py` directory.
 - added a unit test workflow.
 - new Makefile command for the unit tests.
+---------------------
 
 ## Version 1.0.3
 
