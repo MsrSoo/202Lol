@@ -4,7 +4,7 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| **+2.0.0**   | ✅ |
+| **+2.0.0**   | <img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/icons/check.svg" alt="check"> |
 | **1.0.0**   | ❌ |
 
 ## Reporting a Vulnerability
