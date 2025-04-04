@@ -161,7 +161,7 @@ class WebRequestHandler:
                 controller.signal("NEWNYM")  # * Request a new identity
 
             tor_response = requests.get(
-                "http://check.torproject.org", proxies=self.default, timeout=10
+                "https://check.torproject.org", proxies=self.default, timeout=10
             ) # * Check to see if tor has been applied successfully
             if (
                 "Congratulations. This browser is configured to use Tor"
