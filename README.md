@@ -139,10 +139,4 @@ Your support is greatly appreciated, as I am a solo developer and still learning
 
 ## Star History
 
-<a href="https://www.star-history.com/#LifelagCheats/202Lol&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=LifelagCheats/202Lol&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=LifelagCheats/202Lol&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=LifelagCheats/202Lol&type=Date" />
- </picture>
-</a>
+[![Star History Chart](https://api.star-history.com/svg?repos=LifelagCheats/202Lol&type=Date)](https://www.star-history.com/#LifelagCheats/202Lol&Date)
