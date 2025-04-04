@@ -89,23 +89,23 @@ sudo systemctl start tor
     <th>Version</th>
   </tr>
   <tr>
-    <td>Arch Linux</td>
+    <td><img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/icons/arch.svg" alt="arch"> Arch Linux</td>
     <td>6.12.8-arch1-1</td>
   </tr>
   <tr>
-    <td>Ubuntu</td>
+    <td><img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/icons/ubuntu.svg" alt="ubuntu"> Ubuntu</td>
     <td>24.10</td>
   </tr>
   <tr>
-    <td>MacOS</td>
+    <td><img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/icons/mac.svg" alt="mac"> MacOS</td>
     <td>Sequoia 15</td>
   </tr>
   <tr>
-    <td>Windows 10</td>
+    <td><img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/icons/windows_10.svg" alt="win10"> Windows 10</td>
     <td>22H2</td>
   </tr>
   <tr>
-    <td>Windows 11</td>
+    <td><img src="https://github.com/LifelagCheats/202Lol/blob/main/assets/icons/windows_11.svg" alt="win11"> Windows 11</td>
     <td>24H2</td>
   </tr>
 </table>
