@@ -1,3 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <path fill="#0078d4" d="M1 1h10v10H1zm12 0h10v10H13zM1 13h10v10H1zm12 0h10v10H13z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16" fill="#0078d4">
+  <!-- Top Left Square: Only top left corner rounded -->
+  <path d="M2,1 L7,1 L7,7 L1,7 L1,2 A1,1 0 0 1 2,1 Z"/>
+  
+  <!-- Top Right Square: Only top right corner rounded -->
+  <path d="M9,1 L14,1 A1,1 0 0 1 15,2 L15,7 L9,7 Z"/>
+  
+  <!-- Bottom Left Square: Only bottom left corner rounded -->
+  <path d="M1,9 L7,9 L7,15 L2,15 A1,1 0 0 1 1,14 L1,9 Z"/>
+  
+  <!-- Bottom Right Square: Only bottom right corner rounded -->
+  <path d="M9,9 L15,9 L15,14 A1,1 0 0 1 14,15 L9,15 Z"/>
 </svg>
+
