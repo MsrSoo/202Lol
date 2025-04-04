@@ -4,4 +4,4 @@ Disallow: /VERSION
 Disallow: /CODEOWNERS
 Disallow: /.whitesource
 Disallow: /.replit
-
+Disallow: /tests/
