@@ -1,0 +1,23 @@
+name: Lint files
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+    
+jobs:
+  lint:
+    permissions:
+      actions: read
+      contents: write
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      
+      - name: Black Check
+        uses: jpetrucciani/black-check@25.1.0
+        with:
+          path: '.'
