@@ -4,7 +4,22 @@ CHANGELOG
 
 All system changes are documented below
 
-## Version 2.2.1
+## Version 2.2.2 - (04/04/2025)
+
+### Added:
+
+- Interactiveness and icons for Makefile
+- `first-contribution.yml` to greet new contributors (*everyone is welcome :)! *)
+- Icons for `SECURITY.md` and `README.md` for a new look.
+
+### Changed:
+
+- Excluded flags `B404`, `B311` and `B603` from bandit scans since they were unnecessary
+and just cluttering the security page
+
+*this was just a small update, i'm looking forward to updating more*
+
+## Version 2.2.1 - (04/03/2025)
 
 ### Added:
 - New clear function test in `test_minor.py`.
@@ -17,7 +32,7 @@ All system changes are documented below
 - "WebRequestHandler has no attribute clear" error fixed (clear_screen was the function, i forgot :])
 
 
-## Version 2.2.0
+## Version 2.2.0 - (03/31/2025)
 
 ### Added:
 - `test_minor.py` for testing minor functions, you can always add other minor functions to that file, but for now, it only tests the `reset` and `normalize` functions
@@ -27,7 +42,7 @@ All system changes are documented below
 - Added both new files to the Makefile `test` command
 - Updated `SECURITY.md` file, so yeah, things below version `2.0.0` are not supported
 
-# Version 2.0.0
+# Version 2.0.0 - (03/29/2025)
 
 ### Changed:
 - Refractored `main.py` code for better readibility and maintenance.
@@ -39,7 +54,7 @@ All system changes are documented below
 - new Makefile command for the unit tests.
 
 
-## Version 1.0.3
+## Version 1.0.3 - (03/15/2025)
 
 ### bug fixes:
 - fixed cookie printing on both get and post method
@@ -48,7 +63,7 @@ All system changes are documented below
 
 
 
-## Version 1.0.1
+## Version 1.0.1 - (03/13/2025)
 
 
 ### bug fixes:
