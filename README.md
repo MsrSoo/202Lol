@@ -29,7 +29,7 @@
 ## Installation
 
 **prerequisites**
-- python 3.8 or later
+- python 3.9 or later
 - pip
 - git
 - tor (optional)
