@@ -12,6 +12,7 @@ All system changes are documented below
 - `first-contribution.yml` to greet new contributors (*everyone is welcome :)! *) - `@LifelagCheats`
 - Icons for `SECURITY.md` and `README.md` for a new look. - `@LifelagCheats`
 - Yes, added contribution guidelines, don't ask me why i didn't before. - `@LifelagCheats`
+- Linting for python files (`/.github/workflows/linting.yml`) - `@LifelagCheats`
 
 ### Changed:
 
